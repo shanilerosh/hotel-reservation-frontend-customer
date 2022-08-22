@@ -538,8 +538,6 @@ function Billing() {
               renderItem={(item) => (
                 <List.Item>
                   <List.Item.Meta
-
-
                     avatar={
                       <Avatar size="small" className={item.textclass}>
                         {item.avatar}
