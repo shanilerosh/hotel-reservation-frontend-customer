@@ -9,7 +9,7 @@
 =========================================================
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-import { Switch, Route, Redirect } from "react-router-dom";
+import {Redirect, Route, Switch} from "react-router-dom";
 import Home from "./pages/Home";
 import Tables from "./pages/Tables";
 import Billing from "./pages/Billing";
@@ -21,8 +21,8 @@ import Main from "./components/layout/Main";
 import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
-import ClientRegister from "./pages/client/registraion/Client-Register";
 import ClientSchedule from "./pages/client/schedule/Client-Schedule";
+import CheckRoomAvailabilityComp from "./pages/client/reservation/Check-Room-Availability-Comp";
 
 function App() {
   return (
@@ -34,7 +34,7 @@ function App() {
           <Route exact path="/dashboard" component={Home} />
           <Route exact path="/tables" component={Tables} />
           <Route exact path="/billing" component={Billing} />
-          <Route exact path="/client/register" component={ClientRegister} />
+          <Route exact path="/client/reservation" component={CheckRoomAvailabilityComp} />
           <Route exact path="/client/schedule" component={ClientSchedule} />
           <Route exact path="/rtl" component={Rtl} />
           <Route exact path="/profile" component={Profile} />

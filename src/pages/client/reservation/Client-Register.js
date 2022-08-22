@@ -4,7 +4,6 @@ import React, {useState} from 'react';
 import ClientBasicDetailComp from "./Client-Basic-Detail-Comp";
 import PackageDetailComp from "./Package-Detail-Comp";
 import PaymentDetailComp from "./Payment-Detail-Comp";
-
 const {Step} = Steps;
 
 
