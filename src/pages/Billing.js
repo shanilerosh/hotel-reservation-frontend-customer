@@ -532,6 +532,9 @@ function Billing() {
               header={<h6>YESTERDAY</h6>}
               itemLayout="horizontal"
               dataSource={yesterday}
+
+
+
               renderItem={(item) => (
                 <List.Item>
                   <List.Item.Meta
