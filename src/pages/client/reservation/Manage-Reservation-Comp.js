@@ -1,10 +1,12 @@
 import {Button, Card, Col, Divider, Form, Input, Row, Space, Table, Tag, Tooltip} from "antd";
-import React from 'react';
-import {EditOutlined, EyeTwoTone, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
+import React, {useState} from 'react';
+import {EditOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
+import Modal from "antd/es/modal/Modal";
+import EnterBookingDetailComp from "./Enter-Booking-Detail-Comp";
 
 
 function ManageReservationComp(props) {
-
+    const [isReDetailModalVisible, setReDetailModalVisible] = useState(false);
     const columns = [
         {
             title: 'Reservation ID',
@@ -73,7 +75,7 @@ function ManageReservationComp(props) {
             render: (text, rec) => (
                 <Space size="middle">
                     <Tooltip title="View">
-                        <Button className={"table-icon-color"}
+                        <Button className={"table-icon-color"} onClick={() => setModalVisible(true)}
                                 style={{color: '#faad14', backgroundColor: '#070814f5'}}
                                 icon={<EditOutlined style={{backgroundColor: '#070814f5'}}/>}
 
@@ -83,6 +85,9 @@ function ManageReservationComp(props) {
             )
         }
     ]
+    const setModalVisible = (val) => {
+        setReDetailModalVisible(true)
+    }
     const reservationData = [
         {
             resId: 'RES-001',
@@ -197,6 +202,29 @@ function ManageReservationComp(props) {
     ]
     return (
         <>
+            {
+                isReDetailModalVisible ?
+                    <Modal className="modal-custom-bg"
+                           title="Reservation Details"
+                           style={{width: '100%', marginTop: 50, backgroundColor: '#08325e',
+                               fontcolor: 'white',
+                               // overflow: 'scroll'
+                           }}
+                           centered
+                           maskClosable={false}
+                           visible={isReDetailModalVisible}
+                           onCancel={()=>setReDetailModalVisible(false)}
+                           destroyOnClose={true}
+                           footer={null}
+                           width={1000}>
+
+                        <EnterBookingDetailComp/>
+
+                    </Modal>
+
+                :
+                    ''
+            }
 
             <Card
                 style={{width: '100%', marginTop: 50, background: 'rgba(0,0,0,0.42)', fontcolor: 'white'}}>
@@ -269,9 +297,9 @@ function ManageReservationComp(props) {
                             <Space size={16} style={{float: 'right', marginTop: 10}}>
                                 <Form.Item>
                                     <Button style={{
-                                        color: '#C0B9ADFF',
+                                        color: '#ffffff',
                                         backgroundColor: 'transparent',
-                                        borderColor: '#C0B9ADFF',
+                                        borderColor: 'rgba(255,255,255,0.37)',
                                         width: '100%'
                                     }}><ReloadOutlined/>Reset</Button>
                                 </Form.Item>

@@ -3427,3 +3427,23 @@ tr{
     border-color: #faad14!important;
     color: black!important;
 }
+
+.ant-modal-body {
+    padding: 24px;
+    font-size: 14px;
+    line-height: 1.5715;
+    word-wrap: break-word;
+    background-color: #08325e;
+}
+.custome1 .ant-modal-body {
+    padding: 24px;
+    font-size: 14px;
+    line-height: 1.5715;
+    word-wrap: break-word;
+    background-color: #051626;
+}
+.ant-table-tbody > tr.ant-table-row-selected > td {
+    background: #101213!important;
+    border-color: rgb(248, 242, 242)!important;
+
+}

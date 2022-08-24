@@ -1,6 +1,6 @@
 import {Button, Card, Checkbox, Col, Divider, Form, Input, Row, Space} from "antd";
 import React, {useState} from 'react';
-import {BackwardOutlined, RightOutlined, SearchOutlined} from "@ant-design/icons";
+import {BackwardOutlined, ReloadOutlined, RightOutlined, SearchOutlined} from "@ant-design/icons";
 import FilteredAvailableRoomsComp from "./Filtered-Available-Rooms-Comp";
 
 
@@ -63,7 +63,7 @@ function EnterBookingDetailComp(props) {
                     <Row gutter={16}>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                             <Form.Item>
-                                <Input type={"text"} placeholder={"NIC"}
+                                <Input type={"text"} placeholder={"NIC/Passport"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        type="text"/>
                             </Form.Item>
@@ -77,7 +77,21 @@ function EnterBookingDetailComp(props) {
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                             <Form.Item>
-                                <Input type={"text"} placeholder={"State"}
+                                <Input type={"text"} placeholder={"Country"}
+                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                       type="text"/>
+                            </Form.Item>
+                        </Col>
+                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                            <Form.Item>
+                                <Input type={"text"} placeholder={"City"}
+                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                       type="text"/>
+                            </Form.Item>
+                        </Col>
+                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                            <Form.Item>
+                                <Input type={"text"} placeholder={"Address"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        type="text"/>
                             </Form.Item>
@@ -145,9 +159,12 @@ function EnterBookingDetailComp(props) {
                             </Row> : ''
                     }
                     <Space size={16} style={{float: 'right'}}>
-                        <Button type={"dashed"}>
-                            <BackwardOutlined/>Back
-                        </Button>
+                        <Button style={{
+                            color: '#ffffff',
+                            backgroundColor: 'transparent',
+                            borderColor: '#ffffff',
+                            width: '100%'
+                        }}><BackwardOutlined/>Back</Button>
                         <Button type="primary" >
                             Submit
                         </Button>

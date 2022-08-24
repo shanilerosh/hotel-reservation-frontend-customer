@@ -1,6 +1,6 @@
-import {Button, Card, Checkbox, Col, Divider, Form, Input, Row, Space} from "antd";
+import {Button, Card, Checkbox, Col, Divider, Form, Input, Row, Space, Table, Tooltip} from "antd";
 import React, {useState} from 'react';
-import {RightOutlined, SearchOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EditOutlined, RightOutlined, SearchOutlined} from "@ant-design/icons";
 import FilteredAvailableRoomsComp from "./Filtered-Available-Rooms-Comp";
 import EnterBookingDetailComp from "./Enter-Booking-Detail-Comp";
 
@@ -16,6 +16,42 @@ function CheckRoomAvailabilityComp(props) {
     const loadBookingDetails = (values) => {
         onClickBooking(true)
     }
+    const selectedRoomsColumns = [
+        {
+            title: 'Room ID',
+            dataIndex: 'roomId',
+        },
+        {
+            title: 'Floor',
+            dataIndex: 'floor',
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            align: 'center',
+            render: (text, rec) => (
+                <Space size="middle">
+                    <Tooltip title="Remove">
+                        <Button className={"table-icon-color"}
+                                style={{color: '#faad14', backgroundColor: '#070814f5'}}
+                                icon={<DeleteOutlined style={{backgroundColor: '#070814f5'}}/>}
+
+                        />
+                    </Tooltip>
+                </Space>
+            )
+        }
+    ]
+    const selectedRoomData = [
+        {
+            roomId: 'RM0001',
+            floor: '2nd'
+        },
+        {
+            roomId: 'RM0002',
+            floor: '2nd'
+        }
+    ]
     return (
         <>
             {
@@ -82,7 +118,33 @@ function CheckRoomAvailabilityComp(props) {
                         </Form>
                         {
                             isLoadAvailableRooms ?
-                                <FilteredAvailableRoomsComp goToBookingDetails={loadBookingDetails}/> : ''
+                                <>
+                                    <FilteredAvailableRoomsComp/>
+                                    <Divider style={{backgroundColor: 'rgba(75,73,73,0.23)'}}/>
+                                    <Card style={{
+                                        width: '100%',
+                                        marginTop: 15,
+                                        background: 'rgba(45,44,44,0.23)',
+                                        borderRadius: 0,
+                                        color: 'white'
+                                    }}>
+                                        <Row >
+                                            <Col span={24}>
+                                                <Table columns={selectedRoomsColumns}
+                                                       size={"small"}
+                                                       dataSource={selectedRoomData}
+
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                    <Space size={16} style={{float: 'right',marginTop:10}}>
+                                        <Button type="primary" onClick={loadBookingDetails}>
+                                            Book Now
+                                        </Button>
+                                    </Space>
+                                </>
+                                : ''
                         }
 
 
