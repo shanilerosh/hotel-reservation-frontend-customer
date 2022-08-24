@@ -23,6 +23,7 @@ import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
 import ClientSchedule from "./pages/client/schedule/Client-Schedule";
 import CheckRoomAvailabilityComp from "./pages/client/reservation/Check-Room-Availability-Comp";
+import ManageReservationComp from "./pages/client/reservation/Manage-Reservation-Comp";
 
 function App() {
   return (
@@ -34,7 +35,8 @@ function App() {
           <Route exact path="/dashboard" component={Home} />
           <Route exact path="/tables" component={Tables} />
           <Route exact path="/billing" component={Billing} />
-          <Route exact path="/client/reservation" component={CheckRoomAvailabilityComp} />
+          <Route exact path="/createReservation" component={CheckRoomAvailabilityComp} />
+          <Route exact path="/manageReservation" component={ManageReservationComp} />
           <Route exact path="/client/schedule" component={ClientSchedule} />
           <Route exact path="/rtl" component={Rtl} />
           <Route exact path="/profile" component={Profile} />

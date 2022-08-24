@@ -57,7 +57,7 @@ const data=[
                                 </Row>
                                 <Space size={16} style={{float: 'right'}}>
 
-                                    <Button type="primary">
+                                    <Button type="primary" onClick={props.goToBookingDetails}>
                                         Book Now
                                     </Button>
                                 </Space>

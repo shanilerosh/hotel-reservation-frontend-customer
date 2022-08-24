@@ -1712,7 +1712,9 @@ path {
     color: #8c8c8c;
     margin: 0px;
 }
-
+.ant-table-tbody > tr.ant-table-row:hover > td {
+    background: #214282 !important;
+}
 .tag-primary {
     border-radius: 6px;
     padding: 2px 12px;
@@ -1769,7 +1771,16 @@ path {
     background-color: transparent;
     font-size: 12px;
 }
-
+.ant-table-thead > tr > th {
+    position: relative!important;
+    color: #ffffffd9!important;
+    font-weight: 600!important;
+    text-align: left!important;
+    background: #434d7c!important;
+    border-bottom: 1px solid #f0f0f0!important;
+    transition: background 0.3s ease!important;
+    font-size: 12px!important;
+}
 .ant-border-space th:before {
     display: none;
 }
@@ -3369,4 +3380,50 @@ path {
     background-color: transparent!important;
     border-color: #f1a102!important;
     width: 100%!important;
+}
+.btnReset .ant-btn-primary {
+    color: #494744 !important;
+    background-color: transparent!important;
+    border-color: #494744!important;
+    width: 100%!important;
+}
+.ant-checkbox-checked .ant-checkbox-inner{
+    background-color: #f1a102!important;
+    border-color: #f1a102!important;
+}
+.ant-drawer-content-wrapper{
+    width: 45%!important;
+}
+tr{
+    background-color: #070814f5;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.ant-pagination.mini .ant-pagination-total-text, .ant-pagination.mini .ant-pagination-simple-pager {
+    height: 24px;
+    line-height: 24px;
+    color: white;
+}
+
+.table-icon-color{
+    border: none!important;
+    background-color: #070814f5 !important;
+    box-shadow: unset!important;
+}
+.ant-table.ant-table-small {
+    font-size: 12px!important;
+}
+.ant-pagination-item a {
+    display: block;
+    padding: 0 6px;
+    color: #ffffffd9!important;
+    transition: none;
+}
+.ant-pagination-item-active {
+    font-weight: 500;
+    background: #141414!important;
+    border-color: #faad14!important;
+    color: black!important;
 }
