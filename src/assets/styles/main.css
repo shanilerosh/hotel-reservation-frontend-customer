@@ -3409,7 +3409,7 @@ tr{
 
 .table-icon-color{
     border: none!important;
-    background-color: #070814f5 !important;
+    background-color: #11121d !important;
     box-shadow: unset!important;
 }
 .ant-table.ant-table-small {
@@ -3446,4 +3446,16 @@ tr{
     background: #101213!important;
     border-color: rgb(248, 242, 242)!important;
 
+}
+.ant-tooltip-inner {
+    min-width: 30px;
+    min-height: 32px;
+    padding: 6px 8px;
+    color: #fff;
+    text-align: left;
+    text-decoration: none;
+    word-wrap: break-word;
+    background-color: #000000fa!important;
+    border-radius: 2px;
+    box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);
 }

@@ -1,6 +1,6 @@
 import {Button, Card, Col, Divider, Form, Input, Row, Space, Table, Tag, Tooltip} from "antd";
 import React, {useState} from 'react';
-import {EditOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
+import {EditOutlined, MessageOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
 import Modal from "antd/es/modal/Modal";
 import EnterBookingDetailComp from "./Enter-Booking-Detail-Comp";
 
@@ -47,21 +47,31 @@ function ManageReservationComp(props) {
             render: (text, rec) => (
                 <Space size="middle">
                     {
-                        text == "C" ?
+                        text === "C" ?
                             <Tag color='#224B0C'>
                                 Completed
                             </Tag> :
-                            text == "I" ?
-                                <Tag color='#90B77D'>
+                            text === "I" ?
+                                <Tag color='#0a345a'>
                                     Checked In
                                 </Tag> :
-                                text == "P" ?
-                                    <Tag color='#E38B29'>
+                                text === "P" ?
+                                    <Tag color='#095840'>
                                         Pending
                                     </Tag> :
-                                    <Tag color='#930b16'>
-                                        Canceled
-                                    </Tag>
+                                    <>
+                                        <Tag color='#5c2c05'>
+                                            Canceled
+                                        </Tag>
+                                        <Tooltip title="Canceled Reason">
+                                            <Button className={"table-icon-color"} size={"small"} style={{color: '#e7482d', backgroundColor: '#070814f5'}}
+                                            >
+                                                <MessageOutlined style={{backgroundColor: '#11121d'}}/>
+                                            </Button>
+
+                                        </Tooltip>
+                                    </>
+
                     }
 
 
@@ -74,10 +84,10 @@ function ManageReservationComp(props) {
             align: 'center',
             render: (text, rec) => (
                 <Space size="middle">
-                    <Tooltip title="View">
+                    <Tooltip title="View" style={{ backgroundColor: '#000000fa'}}>
                         <Button className={"table-icon-color"} onClick={() => setModalVisible(true)}
                                 style={{color: '#faad14', backgroundColor: '#070814f5'}}
-                                icon={<EditOutlined style={{backgroundColor: '#070814f5'}}/>}
+                                icon={<EditOutlined style={{backgroundColor: '#11121d'}}/>}
 
                         />
                     </Tooltip>

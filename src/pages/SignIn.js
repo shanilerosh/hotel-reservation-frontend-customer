@@ -1,13 +1,13 @@
-import React, {Component, useState} from "react";
-import {Button, Col, Drawer, Form, Input, Layout, Row, Typography,} from "antd";
+import React, {useState} from "react";
+import {Button, Col, Drawer, Form, Input, Layout, message, Row, Typography,} from "antd";
 import Hotel from "../assets/images/hotel-img.jpeg";
 import "../assets/styles/main.css";
-import CheckRoomAvailabilityComp from "./client/reservation/Check-Room-Availability-Comp";
+import axios from "axios";
 
 const {Title} = Typography;
 const {Header, Footer, Content} = Layout;
 
-function SignIn() {
+function SignIn(props) {
     const [visible, setVisible] = useState(false)
 
     const showDrawer = () => {
@@ -17,12 +17,23 @@ function SignIn() {
     const onClose = () => {
         setVisible(false);
     };
-    const onFinish = (values) => {
-        console.log("Success:", values);
+    const onFinish = (val) => {
+        const params = new URLSearchParams();
+        params.append('username', val.userName);
+        params.append('password', val.password);
+        axios.post(`http://localhost:9008/login`, params)
+            .then(res => {
+                console.log(res.data.access_token);
+                sessionStorage.setItem("token", res.data.access_token)
+                window.location.href = '/dashboard'
+            }).catch(error => {
+            message.error("Login Error")
+        })
+
     };
 
-    const onFinishFailed = (errorInfo) => {
-        console.log("Failed:", errorInfo);
+    const onFinishFailed = () => {
+
     };
 
     return (
@@ -47,9 +58,7 @@ function SignIn() {
                                 className="row-col"
                             >
                                 <Form.Item
-                                    // style={{fontFamily:'monospace',color:'white'}}
                                     className="sign-in-ant-input"
-                                    // label="Username"
                                     name="userName"
                                     rules={[
                                         {
@@ -63,9 +72,7 @@ function SignIn() {
                                 </Form.Item>
 
                                 <Form.Item
-                                    // style={{fontFamily:'monospace',color:'white'}}
                                     className="sign-in-ant-input"
-                                    // label="Password"
                                     name="password"
                                     rules={[
                                         {
@@ -82,13 +89,7 @@ function SignIn() {
                                     <Button
 
                                         type="primary"
-                                        htmlType="submit"
-                                        // style={{
-                                        //     color: '#fed430',
-                                        //     backgroundColor: 'transparent',
-                                        //     borderColor: '#fed430', width: '100%'
-                                        // }}
-                                    >
+                                        htmlType="submit">
                                         SIGN IN
                                     </Button>
                                 </Form.Item>
