@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Col, Drawer, Form, Input, Layout, message, Row, Typography,} from "antd";
 import Hotel from "../assets/images/hotel-img.jpeg";
 import "../assets/styles/main.css";
@@ -17,6 +17,13 @@ function SignIn(props) {
     const onClose = () => {
         setVisible(false);
     };
+    useEffect(()=>{
+        const token = sessionStorage.getItem('token');
+        console.log(token);
+        if (token) {
+            window.location.href = '/dashboard'
+        }
+    },[])
     const onFinish = (val) => {
         const params = new URLSearchParams();
         params.append('username', val.userName);

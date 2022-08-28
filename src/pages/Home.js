@@ -1,8 +1,9 @@
-import {Card, Col, Row,} from "antd";
+import {Button, Card, Col, Row,} from "antd";
 
 import Echart from "../components/chart/EChart";
 import LineChart from "../components/chart/LineChart";
 import Title from "antd/es/typography/Title";
+import HttpService from "../util/HttpService";
 
 function Home() {
 
@@ -83,7 +84,11 @@ function Home() {
   ];
 
 
-
+const test = () => {
+  return HttpService.get("/test1").then(res=>{
+    console.log('response-'+res);
+  })
+}
 
 
 
@@ -134,7 +139,11 @@ function Home() {
               </Card>
             </Col>
           </Row>
-
+          <Row gutter={[24, 0]}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
+              <Button onClick={test}>Test</Button>
+            </Col>
+          </Row>
 
         </div>
       </Card>
