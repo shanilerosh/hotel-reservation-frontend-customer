@@ -7,7 +7,7 @@ const HttpMethods = {
 };
 
 const _axios = axios.create();
-const baseUrl = "http://localhost:9008"
+const baseUrl = "http://localhost:9008/api"
 const parseJwt = (token) => {
     try {
         return JSON.parse(atob(token.split(".")[1]));
@@ -44,10 +44,10 @@ const get = (path = "") => {
 //     return _axios.put(url, payload);
 // }
 //
-// const post = (path = "", payload: any) => {
-//     let url = baseUrl + restVersionPath + path;
-//     return _axios.post(url, payload);
-// }
+const post = (path = "", payload: any) => {
+    let url = baseUrl +  path;
+    return _axios.post(url, payload,configure());
+}
 //
 // const deleteOne = (path = "") => {
 //     let url = baseUrl + restVersionPath + path;
@@ -65,7 +65,7 @@ const HttpService = {
     getAxiosClient,
     get,
     // put,
-    // post,
+    post,
     // deleteOne,
     // updateStatus
 };

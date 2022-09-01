@@ -1,48 +1,75 @@
-import {Button, Card, Checkbox, Col, Divider, Form, Input, Row, Space} from "antd";
+import {Button, Card, Checkbox, Col, Divider, Form, Input, message, Row, Space} from "antd";
 import React, {useState} from 'react';
 import {BackwardOutlined, ReloadOutlined, RightOutlined, SearchOutlined} from "@ant-design/icons";
 import FilteredAvailableRoomsComp from "./Filtered-Available-Rooms-Comp";
+import reservationService from "../../../Service/ReservationService";
 
 
 function EnterBookingDetailComp(props) {
 
     const [isProceedWithCreditCard, setProceedWithCreditCard] = useState(false);
 
+    const onFinish = (values) => {
+        let reservationSubmitData = {
+            roomList: props.selectedRooms,
+            totalAmount: 50000,
+            reservationStatus: "OPEN"
+        }
+        reservationService.makeReservation(reservationSubmitData).then((res) => {
+            message.success("Reservation created")
+        }).catch((error) => {
 
+        })
+    }
     return (
         <>
             <Card
                 style={{width: '100%', marginTop: 50, background: 'rgba(0,0,0,0.42)', fontcolor: 'white'}}>
-                <Form layout="vertical">
+                <Form layout="vertical" onFinish={onFinish}
+                      initialValues={{
+                          numberOfOccupants: props.filterationData.numberOfOccupants,
+                          roomCategory: props.filterationData.roomCategory,
+                          departureDateTime: props.filterationData.departureDateTime,
+                          arrivalTime: props.filterationData.arrivalTime,
+                          hotelType: props.filterationData.hotelType
+                      }}
+                >
                     <Row gutter={16}>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item>
+                            <Form.Item name={"hotelType"}
+                                // rules={[{required: true, message: 'This field is required.'}]}
+                            >
                                 <Input type={"text"} placeholder={"Hotel ID"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                       type="text"/>
+                                />
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item>
+                            <Form.Item name={"arrivalTime"}
+                                // rules={[{required: true, message: 'This field is required.'}]}
+                            >
                                 <Input type={"date"} placeholder={"Arrival"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                       disabled={props.isViewOnly}
-                                       type="text"/>
+
+                                />
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item>
+                            <Form.Item name={"departureDateTime"}
+                                // rules={[{required: true, message: 'This field is required.'}]}
+                            >
                                 <Input type={"date"} placeholder={"Departure"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                       disabled={props.isViewOnly}
-                                       type="text"/>
+                                />
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item>
+                            <Form.Item name={"roomCategory"}
+                                // rules={[{required: true, message: 'This field is required.'}]}
+                            >
                                 <Input placeholder={"Room Type"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        type="text"/>
@@ -50,7 +77,9 @@ function EnterBookingDetailComp(props) {
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item>
+                            <Form.Item name={"numberOfOccupants"}
+                                // rules={[{required: true, message: 'This field is required.'}]}
+                            >
                                 <Input placeholder={"No of Occupants"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        type="text"/>
@@ -114,7 +143,8 @@ function EnterBookingDetailComp(props) {
                     <Divider style={{backgroundColor: 'rgba(75,73,73,0.23)'}}/>
                     <Row gutter={16}>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Checkbox onChange={(val) => setProceedWithCreditCard(val.target.checked)} style={{color: 'white'}}>Proceed
+                            <Checkbox onChange={(val) => setProceedWithCreditCard(val.target.checked)}
+                                      style={{color: 'white'}}>Proceed
                                 with credit card details</Checkbox>
                         </Col>
                     </Row>
@@ -159,16 +189,19 @@ function EnterBookingDetailComp(props) {
                             </Row> : ''
                     }
                     <Space size={16} style={{float: 'right'}}>
-                        <Button style={{
-                            color: '#ffffff',
-                            backgroundColor: 'transparent',
-                            borderColor: '#ffffff',
-                            width: '100%'
-                        }}><BackwardOutlined/>Back</Button>
-                        <Button type="primary" >
-                            Submit
-                        </Button>
-
+                        <Form.Item>
+                            <Button style={{
+                                color: '#ffffff',
+                                backgroundColor: 'transparent',
+                                borderColor: '#ffffff',
+                                width: '100%'
+                            }}><BackwardOutlined/>Back</Button>
+                        </Form.Item>
+                        <Form.Item>
+                            <Button type="primary" htmlType={"submit"}>
+                                Submit
+                            </Button>
+                        </Form.Item>
                     </Space>
                 </Form>
             </Card>

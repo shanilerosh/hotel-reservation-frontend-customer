@@ -1,73 +1,104 @@
-import {Button, Card, Col, Divider, Row, Space, Table} from "antd";
-import React, {useState} from 'react';
-import {CheckCircleOutlined, CheckOutlined} from "@ant-design/icons";
+import {Button, Card, Carousel, Col, Divider, message, Row, Space, Table} from "antd";
+import React, {useEffect, useState} from 'react';
+import {CheckCircleOutlined} from "@ant-design/icons";
 import Modal from "antd/es/modal/Modal";
-import EnterBookingDetailComp from "./Enter-Booking-Detail-Comp";
+import reservationService from "../../../Service/ReservationService";
+
+const contentStyle = {
+    height: '200px',
+    color: '#fff',
+    lineHeight: '160px',
+    textAlign: 'center',
+    background: '#364d79',
+    marginLeft: '125px'
+};
+const filteredRoomsOptionTitleStyles = {
+    color: '#f1a102',
+    fontFamily: 'inherit',
+    fontWeight: 500
+};
 
 function FilteredAvailableRoomsComp(props) {
-    const [isVisibleRoomsModal, setVisibleRoomsModal] = useState(false);
-    const data = [
-        {
-            imageUrl: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8aG90ZWwlMjByb29tfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-            imageName: "hotelRoom1",
-            roomDetail: [
-                "With AC", "With TV", "No Of Person : 4 "
-            ]
-        },
-        {
-            imageUrl: "https://media.istockphoto.com/photos/hotel-room-suite-with-view-picture-id627892060?k=20&m=627892060&s=612x612&w=0&h=k6QY-qWNlFbvYhas82e_MoSXceozjrhhgp-krujsoDw=",
-            imageName: "hotelRoom2",
-            roomDetail: [
-                "With AC", "With TV", "No Of Person : 4 "
-            ]
-        },
-        {
-            imageUrl: "https://thumbs.dreamstime.com/b/hotel-room-beautiful-orange-sofa-included-43642330.jpg",
-            imageName: "hotelRoom3",
-            roomDetail: [
-                "With AC", "With TV", "No Of Person : 4 "
-            ]
-        },
-    ]
-    const showAvailableRoomsForRoomType = () => {
-        setVisibleRoomsModal(true)
+    const [{isVisibleRoomsModal, roomsData}, setVisibleRoomsModal] = useState({
+        isVisibleRoomsModal: false,
+        roomsData: {}
+    });
+    const [selectedRows, setSelectedRowData] = useState([])
+
+    const showAvailableRoomsForRoomType = (roomTypeId,roomPrice) => {
+
+        reservationService.getRoomsByRoomType(roomTypeId).then((res) => {
+            res.data.roomDtos.map((data: any, index: number) => {
+                data["key"] = index;
+                data["roomPrice"] = roomPrice;
+            })
+            setVisibleRoomsModal({isVisibleRoomsModal: true, roomsData: res.data})
+        }).catch((error) => {
+            //
+        })
+
     }
     const roomsColumns = [
         {
             title: 'Room ID',
             dataIndex: 'roomId',
+            width: 40
+        },
+        {
+            title: 'Room Number',
+            dataIndex: 'roomNumber',
+            width: 40
+        },
+        {
+            title: 'Non Smoking',
+            dataIndex: 'isNoneSmoking',
+            width: 40,
+            render: (val: boolean) => {
+                return val ? "Yes" : "No"
+            }
+        },
+        {
+            title: 'Remark',
+            dataIndex: 'roomRemark',
+            width: 50
+        },
+        {
+            title: 'House Keeping Status',
+            dataIndex: 'houseKeepingStatus',
+            width: 50
+        },
+        {
+            title: 'Room Price',
+            dataIndex: 'roomPrice',
+            width: 50
         },
         {
             title: 'Floor',
             dataIndex: 'floor',
+            width: 40
         },
     ]
-    const roomData = [
-        {
-            roomId: 'RM0001',
-            floor: '2nd',
-            key: '1',
-        },
-        {
-            roomId: 'RM0002',
-            floor: '2nd',
-            key: '2',
-        }
-    ]
+
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
-
-            // props.rowSelection(selectedRows, selectedRowKeys)
+            setSelectedRowData(selectedRows)
         }
 
+    };
+
+    const onChange = (currentSlide) => {
+        console.log(currentSlide);
+    }
+    const submitSelectedRooms = () => {
+        props.rowSelection(selectedRows)
     };
     return (
         <>
             <Divider style={{backgroundColor: 'rgba(75,73,73,0.23)'}}/>
 
-            <Row gutter={16}>
+            <Row gutter={16} style={{height: '600px', overflow: 'auto'}}>
                 {
-                    data.map((roomData) => {
+                    props.filteredRoomData.map((roomData) => {
                         return <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                             <Card
                                 style={{
@@ -79,26 +110,48 @@ function FilteredAvailableRoomsComp(props) {
                                 }}>
                                 <Row gutter={16}>
                                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                        <img src={roomData.imageUrl} alt={roomData.imageName} style={{width: '100%'}}/>
+                                        <img src={roomData.mainImg} alt={roomData.mainImg} style={{width: '100%'}}/>
 
                                     </Col>
                                 </Row>
 
                                 <Row gutter={16} style={{marginTop: 10, marginLeft: 5}}>
-                                    <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                                        {
-                                            roomData.roomDetail.map((roomFacilities) => {
-                                                return <p><CheckCircleOutlined
-                                                    style={{color: '#f1a102'}}/> {roomFacilities}</p>
-                                            })
-                                        }
-
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        {/*{*/}
+                                        {/*    roomData.roomDetail.map((roomFacilities) => {*/}
+                                        {/*        return <p><CheckCircleOutlined*/}
+                                        {/*            style={{color: '#f1a102'}}/> {roomFacilities}</p>*/}
+                                        {/*    })*/}
+                                        {/*}*/}
+                                        <p><CheckCircleOutlined
+                                            style={{color: '#f1a102'}}/>
+                                            <span
+                                                style={filteredRoomsOptionTitleStyles}> Room Type : </span> {roomData.cat}
+                                        </p>
                                     </Col>
-
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <p><CheckCircleOutlined
+                                            style={{color: '#f1a102'}}/><span
+                                            style={filteredRoomsOptionTitleStyles}> Room Category : </span> {roomData.roomDetail}
+                                        </p>
+                                    </Col>
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <p><CheckCircleOutlined
+                                            style={{color: '#f1a102'}}/><span
+                                            style={filteredRoomsOptionTitleStyles}> No of Occupancy : </span> {roomData.numberOfOccupants}
+                                        </p>
+                                    </Col>
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <p><CheckCircleOutlined
+                                            style={{color: '#f1a102'}}/><span
+                                            style={filteredRoomsOptionTitleStyles}> Price : </span> {roomData.roomPrice}
+                                        </p>
+                                    </Col>
                                 </Row>
                                 <Space size={16} style={{float: 'right'}}>
 
-                                    <Button type="primary" onClick={() => showAvailableRoomsForRoomType()}>
+                                    <Button type="primary"
+                                            onClick={() => showAvailableRoomsForRoomType(roomData.roomTypeId,roomData.roomPrice)}>
                                         View Availability
                                     </Button>
                                 </Space>
@@ -128,15 +181,34 @@ function FilteredAvailableRoomsComp(props) {
 
                         <Row>
                             <Col span={24}>
-                                <Table columns={roomsColumns}
+                                <Carousel afterChange={onChange}>
+                                    {
+                                        roomsData.subImages.map((subRoomImg, index) => {
+                                            return <div>
+                                                <img style={contentStyle}
+                                                     src={subRoomImg}
+                                                     alt={"Sub_Room_" + index}/>
+
+                                            </div>
+                                        })
+                                    }
+
+
+                                </Carousel>
+                            </Col>
+                        </Row>
+                        <Row style={{marginTop: 20}}>
+                            <Col span={24}>
+                                <Table className={"modalTable"} columns={roomsColumns}
+                                       scroll={{x: 1000, y: 500}}
                                        size={"small"}
-                                       dataSource={roomData}
+                                       dataSource={roomsData.roomDtos}
                                        rowSelection={rowSelection}
                                 />
                             </Col>
                         </Row>
-                        <Space size={16} style={{float: 'right',marginTop:10}}>
-                            <Button type="primary" >
+                        <Space size={16} style={{float: 'right', marginTop: 10}}>
+                            <Button type="primary" onClick={submitSelectedRooms}>
                                 Submit
                             </Button>
                         </Space>

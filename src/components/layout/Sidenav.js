@@ -34,7 +34,7 @@ function Sidenav({color}) {
                     </NavLink>
                 </Menu.Item>
 
-                <Menu.Item key="3">
+                <Menu.Item key="2">
                     <NavLink to="/createReservation">
 
                         <span className="label">Create Reservation</span>
@@ -44,6 +44,12 @@ function Sidenav({color}) {
                     <NavLink to="/manageReservation">
 
                         <span className="label">Manage Reservation</span>
+                    </NavLink>
+                </Menu.Item>
+                <Menu.Item key="4">
+                    <NavLink to="/viewReports">
+
+                        <span className="label">Reports</span>
                     </NavLink>
                 </Menu.Item>
 

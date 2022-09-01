@@ -82,14 +82,15 @@ function ManageReservationComp(props) {
             title: 'Action',
             key: 'action',
             align: 'center',
+
             render: (text, rec) => (
                 <Space size="middle">
                     <Tooltip title="View" style={{ backgroundColor: '#000000fa'}}>
                         <Button className={"table-icon-color"} onClick={() => setModalVisible(true)}
                                 style={{color: '#faad14', backgroundColor: '#070814f5'}}
-                                icon={<EditOutlined style={{backgroundColor: '#11121d'}}/>}
 
-                        />
+
+                        ><EditOutlined /></Button>
                     </Tooltip>
                 </Space>
             )
@@ -244,7 +245,7 @@ function ManageReservationComp(props) {
                             <Form.Item>
                                 <Input type={"text"} placeholder={"Hotel ID"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                       type="text"/>
+                                       />
 
                             </Form.Item>
                         </Col>
@@ -253,7 +254,7 @@ function ManageReservationComp(props) {
                                 <Input type={"date"} placeholder={"Arrival Date From"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        disabled={props.isViewOnly}
-                                       type="text"/>
+                                       />
 
                             </Form.Item>
                         </Col>
@@ -262,7 +263,7 @@ function ManageReservationComp(props) {
                                 <Input type={"date"} placeholder={"Arrival Date To"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        disabled={props.isViewOnly}
-                                       type="text"/>
+                                       />
 
                             </Form.Item>
                         </Col>
@@ -271,7 +272,7 @@ function ManageReservationComp(props) {
                                 <Input type={"date"} placeholder={"Departure Date From"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        disabled={props.isViewOnly}
-                                       type="text"/>
+                                       />
 
                             </Form.Item>
                         </Col>
@@ -280,7 +281,7 @@ function ManageReservationComp(props) {
                                 <Input type={"date"} placeholder={"Departure Date To"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        disabled={props.isViewOnly}
-                                       type="text"/>
+                                       />
 
                             </Form.Item>
                         </Col>
@@ -334,7 +335,7 @@ function ManageReservationComp(props) {
                                    pageSizeOptions: ['10', '50', '100', '500'],
                                    defaultPageSize: 10,
                                    showSizeChanger: true,
-                                   showTotal: (total) => total == 1 ? `Total ${total} item` : `Total ${total} items`
+                                   showTotal: (total) => total === 1 ? `Total ${total} item` : `Total ${total} items`
                                }}
                         />
                     </Col>

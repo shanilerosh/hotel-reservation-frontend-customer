@@ -88,7 +88,7 @@ function SignIn(props) {
                                         },
                                     ]}
                                 >
-                                    <Input style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                    <Input type={"password"} style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                            placeholder="Password"/>
                                 </Form.Item>
 

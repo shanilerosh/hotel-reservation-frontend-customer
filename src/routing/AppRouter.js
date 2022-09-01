@@ -13,6 +13,7 @@ import "../assets/styles/responsive.css";
 import PrivateRoute from "../routing/PrivateRout";
 import CheckRoomAvailabilityComp from "../pages/client/reservation/Check-Room-Availability-Comp";
 import ManageReservationComp from "../pages/client/reservation/Manage-Reservation-Comp";
+import ReportsComp from "../pages/reports/Reports-Comp";
 
 function AppRouter() {
   return (
@@ -26,6 +27,7 @@ function AppRouter() {
           <PrivateRoute exact path="/billing" component={Billing} />
           <PrivateRoute exact path="/createReservation" component={CheckRoomAvailabilityComp} />
           <PrivateRoute exact path="/manageReservation" component={ManageReservationComp} />
+          <PrivateRoute exact path="/viewReports" component={ReportsComp} />
           <PrivateRoute exact path="/rtl" component={Rtl} />
           <PrivateRoute exact path="/profile" component={Profile} />
         </Main>

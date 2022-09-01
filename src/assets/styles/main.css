@@ -1712,9 +1712,11 @@ path {
     color: #8c8c8c;
     margin: 0px;
 }
+
 .ant-table-tbody > tr.ant-table-row:hover > td {
     background: #214282 !important;
 }
+
 .tag-primary {
     border-radius: 6px;
     padding: 2px 12px;
@@ -1771,16 +1773,18 @@ path {
     background-color: transparent;
     font-size: 12px;
 }
+
 .ant-table-thead > tr > th {
-    position: relative!important;
-    color: #ffffffd9!important;
-    font-weight: 600!important;
-    text-align: left!important;
-    background: #434d7c!important;
-    border-bottom: 1px solid #f0f0f0!important;
-    transition: background 0.3s ease!important;
-    font-size: 12px!important;
+    position: relative !important;
+    color: #ffffffd9 !important;
+    font-weight: 600 !important;
+    text-align: left !important;
+    background: #434d7c !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    transition: background 0.3s ease !important;
+    font-size: 12px !important;
 }
+
 .ant-border-space th:before {
     display: none;
 }
@@ -2094,8 +2098,22 @@ body {
     border-left: none !important;
     border-top: none !important;
     border-right: none !important;
+    background: rgba(0, 0, 0, 0) !important;
+    color: white !important;
 }
-
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    position: relative!important;
+    background-color: #060c14!important;
+    border-radius: 2px!important;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1)!important;
+    border: 1px none #c7c8c9!important;
+    border-bottom-style: solid!important;
+    color: white!important;
+}
+.ant-select-dropdown{
+    background-color: #131517 !important;
+    color: white;
+}
 .font-bold {
     font-weight: 700;
 }
@@ -2118,7 +2136,6 @@ body {
     /*border-radius: 6px;*/
 
 }
-
 
 
 .layout-sign-up .ant-layout-footer {
@@ -2862,12 +2879,14 @@ span.ant-page-header-heading-title {
 }
 
 section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
-  span.ant-breadcrumb-separator {
-  color: #fff;
+span.ant-breadcrumb-separator {
+    color: #fff;
 }
+
 .ant-breadcrumb-separator {
-    color: #fff!important;
+    color: #fff !important;
 }
+
 section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
 span.ant-breadcrumb-link {
     color: #fff;
@@ -3375,26 +3394,31 @@ path {
     line-height: 17px !important;
     color: #fff !important;
 }
+
 .ant-btn-primary {
-    color: #f1a102!important;
-    background-color: transparent!important;
-    border-color: #f1a102!important;
-    width: 100%!important;
+    color: #f1a102 !important;
+    background-color: transparent !important;
+    border-color: #f1a102 !important;
+    width: 100% !important;
 }
+
 .btnReset .ant-btn-primary {
     color: #494744 !important;
-    background-color: transparent!important;
-    border-color: #494744!important;
-    width: 100%!important;
+    background-color: transparent !important;
+    border-color: #494744 !important;
+    width: 100% !important;
 }
-.ant-checkbox-checked .ant-checkbox-inner{
-    background-color: #f1a102!important;
-    border-color: #f1a102!important;
+
+.ant-checkbox-checked .ant-checkbox-inner {
+    background-color: #f1a102 !important;
+    border-color: #f1a102 !important;
 }
-.ant-drawer-content-wrapper{
-    width: 45%!important;
+
+.ant-drawer-content-wrapper {
+    width: 45% !important;
 }
-tr{
+
+tr {
     background-color: #070814f5;
     color: white;
     font-size: 12px;
@@ -3407,25 +3431,28 @@ tr{
     color: white;
 }
 
-.table-icon-color{
-    border: none!important;
+.table-icon-color {
+    border: none !important;
     background-color: #11121d !important;
-    box-shadow: unset!important;
+    box-shadow: unset !important;
 }
+
 .ant-table.ant-table-small {
-    font-size: 12px!important;
+    font-size: 12px !important;
 }
+
 .ant-pagination-item a {
     display: block;
     padding: 0 6px;
-    color: #ffffffd9!important;
+    color: #ffffffd9 !important;
     transition: none;
 }
+
 .ant-pagination-item-active {
     font-weight: 500;
-    background: #141414!important;
-    border-color: #faad14!important;
-    color: black!important;
+    background: #141414 !important;
+    border-color: #faad14 !important;
+    color: black !important;
 }
 
 .ant-modal-body {
@@ -3435,6 +3462,7 @@ tr{
     word-wrap: break-word;
     background-color: #08325e;
 }
+
 .custome1 .ant-modal-body {
     padding: 24px;
     font-size: 14px;
@@ -3442,10 +3470,17 @@ tr{
     word-wrap: break-word;
     background-color: #051626;
 }
-.ant-table-tbody > tr.ant-table-row-selected > td {
-    background: #101213!important;
-    border-color: rgb(248, 242, 242)!important;
 
+.ant-table-tbody > tr.ant-table-row-selected > td {
+    background: #101213 !important;
+    border-color: rgb(248, 242, 242) !important;
+
+}
+.modalTable tr {
+    background-color: #051626;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
 }
 .ant-tooltip-inner {
     min-width: 30px;
@@ -3455,7 +3490,7 @@ tr{
     text-align: left;
     text-decoration: none;
     word-wrap: break-word;
-    background-color: #000000fa!important;
+    background-color: #000000fa !important;
     border-radius: 2px;
     box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);
 }
