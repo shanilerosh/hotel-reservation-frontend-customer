@@ -1,6 +1,6 @@
 import {Button, Card, Carousel, Col, Divider, message, Row, Space, Table} from "antd";
 import React, {useEffect, useState} from 'react';
-import {CheckCircleOutlined} from "@ant-design/icons";
+import {CheckCircleOutlined, FundViewOutlined} from "@ant-design/icons";
 import Modal from "antd/es/modal/Modal";
 import reservationService from "../../../Service/ReservationService";
 
@@ -138,7 +138,7 @@ function FilteredAvailableRoomsComp(props) {
                                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                                         <p><CheckCircleOutlined
                                             style={{color: '#f1a102'}}/><span
-                                            style={filteredRoomsOptionTitleStyles}> No of Occupancy : </span> {roomData.numberOfOccupants}
+                                            style={filteredRoomsOptionTitleStyles}> Capacity : </span> {roomData.numberOfOccupants}
                                         </p>
                                     </Col>
                                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
@@ -152,7 +152,7 @@ function FilteredAvailableRoomsComp(props) {
 
                                     <Button type="primary"
                                             onClick={() => showAvailableRoomsForRoomType(roomData.roomTypeId,roomData.roomPrice)}>
-                                        View Availability
+                                        <FundViewOutlined />View Availability
                                     </Button>
                                 </Space>
                             </Card>

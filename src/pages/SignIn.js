@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Button, Col, Drawer, Form, Input, Layout, message, Row, Typography,} from "antd";
+import {Button, Col, Divider, Drawer, Form, Input, Layout, message, Row, Typography,} from "antd";
 import Hotel from "../assets/images/hotel-img.jpeg";
 import "../assets/styles/main.css";
 import axios from "axios";
+import customerService from "../Service/CustomerService";
 
 const {Title} = Typography;
 const {Header, Footer, Content} = Layout;
@@ -17,13 +18,13 @@ function SignIn(props) {
     const onClose = () => {
         setVisible(false);
     };
-    useEffect(()=>{
+    useEffect(() => {
         const token = sessionStorage.getItem('token');
         console.log(token);
         if (token) {
             window.location.href = '/dashboard'
         }
-    },[])
+    }, [])
     const onFinish = (val) => {
         const params = new URLSearchParams();
         params.append('username', val.userName);
@@ -34,13 +35,21 @@ function SignIn(props) {
                 sessionStorage.setItem("token", res.data.access_token)
                 window.location.href = '/dashboard'
             }).catch(error => {
-            message.error("Login Error")
+            message.error(error.response.data.message);
         })
 
     };
 
     const onFinishFailed = () => {
 
+    };
+    const registrationSubmit = (customerRegVals) => {
+        axios.post(`http://localhost:9008/api/customer/`, customerRegVals).then((res) => {
+            message.success("New Customer Added Successfully")
+        }).catch((error) => {
+
+            message.error(error.response.data.message);
+        })
     };
 
     return (
@@ -116,25 +125,67 @@ function SignIn(props) {
                         </Col>
                         <>
                             <Drawer title="Register Form" placement="right" onClose={onClose} visible={visible}>
-                                <Form layout="vertical">
-                                    <Form.Item>
-                                        <Input placeholder="nic"/>
-                                    </Form.Item>
-                                    <Form.Item>
-                                        <Input placeholder="name"/>
-                                    </Form.Item>
-                                    <Form.Item>
-                                        <Input placeholder="state"/>
-                                    </Form.Item>
-                                    <Form.Item>
-                                        <Input placeholder="address"/>
-                                    </Form.Item>
-                                    <Form.Item>
-                                        <Input placeholder="mobile number"/>
-                                    </Form.Item>
-                                    <Form.Item>
-                                        <Button type="primary">Submit</Button>
-                                    </Form.Item>
+
+                                <Form layout="vertical" onFinish={registrationSubmit}>
+                                    <Row gutter={16}>
+                                        <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                            <Form.Item rules={[{required: true, message: 'This field is required.'}]}
+                                                       name={"nicPass"}>
+                                                <Input placeholder="NIC/Passport"/>
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                            <Form.Item rules={[{required: true, message: 'This field is required.'}]}
+                                                       name={"customerName"}>
+                                                <Input placeholder="Name"/>
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                            <Form.Item rules={[{required: true, message: 'This field is required.'}]}
+                                                       name={"country"}>
+                                                <Input placeholder="Country"/>
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                            <Form.Item rules={[{required: true, message: 'This field is required.'}]}
+                                                       name={"city"}>
+                                                <Input placeholder="City"/>
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                            <Form.Item rules={[{required: true, message: 'This field is required.'}]}
+                                                       name={"address"}>
+                                                <Input placeholder="Address"/>
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                            <Form.Item rules={[{required: true, message: 'This field is required.'}]}
+                                                       name={"contactNumber"}>
+                                                <Input placeholder="Contact Number"/>
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                            <Form.Item rules={[{required: true, message: 'This field is required.'}]}
+                                                       name={"email"}>
+                                                <Input placeholder="Email"/>
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                            <Divider/>
+                                            <Form.Item rules={[{required: true, message: 'This field is required.'}]}
+                                                       name={"username"}>
+                                                <Input placeholder="User Name"/>
+                                            </Form.Item>
+
+                                            <Form.Item rules={[{required: true, message: 'This field is required.'}]}
+                                                       name={"password"}>
+                                                <Input type={"password"} placeholder="Password"/>
+                                            </Form.Item>
+                                            <Form.Item>
+                                                <Button type="primary" htmlType={"submit"}>Submit</Button>
+                                            </Form.Item>
+                                        </Col>
+                                    </Row>
                                 </Form>
                             </Drawer>
                         </>
@@ -144,7 +195,8 @@ function SignIn(props) {
 
             </div>
         </>
-    );
+    )
+        ;
 
 }
 

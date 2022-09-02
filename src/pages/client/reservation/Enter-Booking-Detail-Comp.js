@@ -1,5 +1,5 @@
-import {Button, Card, Checkbox, Col, Divider, Form, Input, message, Row, Space} from "antd";
-import React, {useState} from 'react';
+import {Button, Card, Checkbox, Col, DatePicker, Divider, Form, Input, message, Row, Space, Table} from "antd";
+import React, {useEffect, useState} from 'react';
 import {BackwardOutlined, ReloadOutlined, RightOutlined, SearchOutlined} from "@ant-design/icons";
 import FilteredAvailableRoomsComp from "./Filtered-Available-Rooms-Comp";
 import reservationService from "../../../Service/ReservationService";
@@ -8,6 +8,7 @@ import reservationService from "../../../Service/ReservationService";
 function EnterBookingDetailComp(props) {
 
     const [isProceedWithCreditCard, setProceedWithCreditCard] = useState(false);
+    const [totalRoomPrice, setTotalRoomPrice] = useState(0);
 
     const onFinish = (values) => {
         let reservationSubmitData = {
@@ -21,18 +22,50 @@ function EnterBookingDetailComp(props) {
 
         })
     }
+
+    const selectedRoomsColumns = [
+        {
+            title: 'Room ID',
+            dataIndex: 'roomId',
+            width: 60
+        },
+        {
+            title: 'Room Number',
+            dataIndex: 'roomNumber',
+            width: 60
+        },
+        {
+            title: 'Room Price',
+            dataIndex: 'roomPrice',
+            align:'right',
+            width: 60
+        },
+    ]
+    useEffect(()=>{
+        if(props.isFrom==="CREATE_RES"){
+            calculateTotalRoomCost()
+
+        }
+    },[])
+    const calculateTotalRoomCost=()=>{
+        let totalRoomCost=0
+        props.selectedRooms.forEach((room)=>{
+            totalRoomCost+=room.roomPrice
+        })
+        setTotalRoomPrice(totalRoomCost)
+    }
     return (
         <>
             <Card
                 style={{width: '100%', marginTop: 50, background: 'rgba(0,0,0,0.42)', fontcolor: 'white'}}>
                 <Form layout="vertical" onFinish={onFinish}
-                      initialValues={{
+                      initialValues={props.isFrom==="CREATE_RES"?{
                           numberOfOccupants: props.filterationData.numberOfOccupants,
                           roomCategory: props.filterationData.roomCategory,
                           departureDateTime: props.filterationData.departureDateTime,
                           arrivalTime: props.filterationData.arrivalTime,
                           hotelType: props.filterationData.hotelType
-                      }}
+                      }:{}}
                 >
                     <Row gutter={16}>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
@@ -49,8 +82,8 @@ function EnterBookingDetailComp(props) {
                             <Form.Item name={"arrivalTime"}
                                 // rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <Input type={"date"} placeholder={"Arrival"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                <DatePicker  placeholder={"Arrival"}
+                                       style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
 
                                 />
 
@@ -60,8 +93,8 @@ function EnterBookingDetailComp(props) {
                             <Form.Item name={"departureDateTime"}
                                 // rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <Input type={"date"} placeholder={"Departure"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                <DatePicker  placeholder={"Departure"}
+                                       style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
                                 />
 
                             </Form.Item>
@@ -141,6 +174,33 @@ function EnterBookingDetailComp(props) {
                         </Col>
                     </Row>
                     <Divider style={{backgroundColor: 'rgba(75,73,73,0.23)'}}/>
+                    <Card style={{
+                        width: '100%',
+                        marginTop: 15,
+                        background: 'rgba(45,44,44,0.23)',
+                        borderRadius: 0,
+                        color: 'white'
+                    }}>
+                        <Row>
+                            <Col span={24}>
+                                <Table columns={selectedRoomsColumns}
+                                       size={"small"}
+                                       dataSource={props.selectedRooms}
+                                       pagination={false}
+                                />
+                            </Col>
+                        </Row>
+                        <Row style={{marginTop:10}}>
+                            <Col span={12}>
+                                <p align={'right'}>Total Room Cost</p>
+                            </Col>
+                            <Col span={12}>
+                                <p align={'right'}>Rs : {totalRoomPrice}</p>
+                            </Col>
+                        </Row>
+                    </Card>
+
+                    <Divider style={{backgroundColor: 'rgba(75,73,73,0.23)'}}/>
                     <Row gutter={16}>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                             <Checkbox onChange={(val) => setProceedWithCreditCard(val.target.checked)}
@@ -156,7 +216,6 @@ function EnterBookingDetailComp(props) {
                                     <Form.Item>
                                         <Input type={"text"} placeholder={"Credit card number"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               disabled={props.isViewOnly}
                                                type="text"/>
 
                                     </Form.Item>
@@ -165,7 +224,6 @@ function EnterBookingDetailComp(props) {
                                     <Form.Item>
                                         <Input type={"text"} placeholder={"Name on card"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               disabled={props.isViewOnly}
                                                type="text"/>
 
                                     </Form.Item>

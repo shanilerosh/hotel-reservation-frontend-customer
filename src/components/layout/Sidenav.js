@@ -1,6 +1,7 @@
 import {Menu} from "antd";
 import {NavLink, useLocation} from "react-router-dom";
 import React from "react";
+import Logo from "../../assets/images/hotelLogo5.png";
 
 function Sidenav({color}) {
     const {pathname} = useLocation();
@@ -10,13 +11,9 @@ function Sidenav({color}) {
     return (
         <>
             <div className="header-col header-brand">
-                <h5 style={{
-                    color: '#0e891d',
-                    fontSize: 17,
-                    fontFamily: 'cursive'
-                }}>
-                    {/* <img style={{width:25,height:30}} src={Dumbell} alt="" /> Gravity Gear Gymnasium */}
-                </h5>
+
+                     <img style={{width:175,height:122,marginLeft:15,marginTop:-33}} src={Logo} alt="" />
+
             </div>
             <hr/>
             <Menu theme="light" mode="inline">

@@ -1,4 +1,4 @@
-import {Button, Card, Col, Divider, Form, Input, Row, Space, Table, Tag, Tooltip} from "antd";
+import {Button, Card, Col, DatePicker, Divider, Form, Input, Row, Space, Table, Tag, Tooltip} from "antd";
 import React, {useState} from 'react';
 import {EditOutlined, MessageOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
 import Modal from "antd/es/modal/Modal";
@@ -251,36 +251,32 @@ function ManageReservationComp(props) {
                         </Col>
                         <Col xs={6} sm={6} md={6} lg={6} xl={6}>
                             <Form.Item>
-                                <Input type={"date"} placeholder={"Arrival Date From"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                       disabled={props.isViewOnly}
+                                <DatePicker  placeholder={"Arrival Date From"}
+                                       style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
                                        />
 
                             </Form.Item>
                         </Col>
                         <Col xs={6} sm={6} md={6} lg={6} xl={6}>
                             <Form.Item>
-                                <Input type={"date"} placeholder={"Arrival Date To"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                       disabled={props.isViewOnly}
+                                <DatePicker  placeholder={"Arrival Date To"}
+                                       style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
                                        />
 
                             </Form.Item>
                         </Col>
                         <Col xs={6} sm={6} md={6} lg={6} xl={6}>
                             <Form.Item>
-                                <Input type={"date"} placeholder={"Departure Date From"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                       disabled={props.isViewOnly}
+                                <DatePicker  placeholder={"Departure Date From"}
+                                       style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
                                        />
 
                             </Form.Item>
                         </Col>
                         <Col xs={6} sm={6} md={6} lg={6} xl={6}>
                             <Form.Item>
-                                <Input type={"date"} placeholder={"Departure Date To"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                       disabled={props.isViewOnly}
+                                <DatePicker  placeholder={"Departure Date To"}
+                                       style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
                                        />
 
                             </Form.Item>

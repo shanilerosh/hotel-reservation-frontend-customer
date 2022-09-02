@@ -1,6 +1,6 @@
-import {Button, Card, Col, Divider, Form, Input, message, Row, Space, Table, Tooltip} from "antd";
+import {Button, Card, Col, DatePicker, Divider, Form, Input, message, Row, Space, Table, Tooltip} from "antd";
 import React, {useState} from 'react';
-import {DeleteOutlined, SearchOutlined} from "@ant-design/icons";
+import {DeleteOutlined, SearchOutlined, StarOutlined} from "@ant-design/icons";
 import FilteredAvailableRoomsComp from "./Filtered-Available-Rooms-Comp";
 import EnterBookingDetailComp from "./Enter-Booking-Detail-Comp";
 import reservationService from "../../../Service/ReservationService";
@@ -121,14 +121,14 @@ function CheckRoomAvailabilityComp(props) {
         <>
             {
                 isClickedBooking ?
-                    <EnterBookingDetailComp selectedRooms={selectedRows} filterationData={filterations}/> :
+                    <EnterBookingDetailComp isFrom={"CREATE_RES"} selectedRooms={selectedRows} filterationData={filterations}/> :
                     <Card
                         style={{width: '100%', marginTop: 50, background: 'rgba(0,0,0,0.42)', fontcolor: 'white'}}>
                         <Form layout="vertical" onFinish={checkRoomsAvailability}>
                             <Row gutter={16}>
                                 <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                                     <Form.Item name={"hotelType"}
-                                        rules={[{required: true, message: 'This field is required.'}]}
+                                        // rules={[{required: true, message: 'This field is required.'}]}
                                     >
                                         <Input type={"text"} placeholder={"Hotel ID"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
@@ -138,10 +138,10 @@ function CheckRoomAvailabilityComp(props) {
                                 </Col>
                                 <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                                     <Form.Item name={"arrivalTime"}
-                                        rules={[{required: true, message: 'This field is required.'}]}
+                                        // rules={[{required: true, message: 'This field is required.'}]}
                                     >
-                                        <Input type={"date"} placeholder={"Arrival"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                        <DatePicker  placeholder={"Arrival"}
+                                               style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
 
                                         />
 
@@ -149,17 +149,17 @@ function CheckRoomAvailabilityComp(props) {
                                 </Col>
                                 <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                                     <Form.Item name={"departureDateTime"}
-                                        rules={[{required: true, message: 'This field is required.'}]}
+                                        // rules={[{required: true, message: 'This field is required.'}]}
                                     >
-                                        <Input type={"date"} placeholder={"Departure"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                        <DatePicker  placeholder={"Departure"}
+                                               style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
                                         />
 
                                     </Form.Item>
                                 </Col>
                                 <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                                     <Form.Item name={"roomCategory"}
-                                        rules={[{required: true, message: 'This field is required.'}]}
+                                        // rules={[{required: true, message: 'This field is required.'}]}
                                     >
                                         <Input placeholder={"Room Type"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
@@ -169,7 +169,7 @@ function CheckRoomAvailabilityComp(props) {
                                 </Col>
                                 <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                                     <Form.Item name={"numberOfOccupants"}
-                                        rules={[{required: true, message: 'This field is required.'}]}
+                                        // rules={[{required: true, message: 'This field is required.'}]}
                                     >
                                         <Input placeholder={"No of Occupants"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
@@ -215,7 +215,7 @@ function CheckRoomAvailabilityComp(props) {
                                     </Card>
                                     <Space size={16} style={{float: 'right', marginTop: 10}}>
                                         <Button type="primary" onClick={loadBookingDetails}>
-                                            Book Now
+                                            <StarOutlined />Book Now
                                         </Button>
                                     </Space>
                                 </>

@@ -1,4 +1,4 @@
-import {Select, Button, Card, Col, Divider, Form, Input, Row, Space, Table, Tag, Tooltip} from "antd";
+import {Select, Button, Card, Col, Divider, Form, Input, Row, Space, Table, Tag, Tooltip, DatePicker} from "antd";
 import React, {useState} from 'react';
 import {EditOutlined, MessageOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
 
@@ -40,14 +40,17 @@ function ReportsComp(props) {
                                 <>
                                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
                                         <Form.Item>
-                                            <Input placeholder={"Booking date from"} type={"date"}/>
+                                            <DatePicker  placeholder={"Booking date from"}
+                                                         style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
+                                            />
 
                                         </Form.Item>
                                     </Col>
                                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
                                         <Form.Item>
-                                            <Input placeholder={"Booking date to"} type={"date"}/>
-
+                                            <DatePicker  placeholder={"Booking date to"}
+                                                         style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
+                                            />
                                         </Form.Item>
                                     </Col>
                                 </> : reportType === "2" ?

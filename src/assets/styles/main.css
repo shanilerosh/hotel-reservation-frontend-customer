@@ -1,14 +1,4 @@
-/*!
-=========================================================
-* Muse Ant Design Dashboard - v1.0.0
-=========================================================
-* Product Page: https://www.creative-tim.com/product/muse-ant-design-dashboard
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/muse-ant-design-dashboard/blob/main/LICENSE.md)
-* Coded by Creative Tim
-=========================================================
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+
 body {
     padding: 0 0 30px 0;
     background-color: #fafafa;
@@ -3493,4 +3483,32 @@ tr {
     background-color: #000000fa !important;
     border-radius: 2px;
     box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);
+}
+.ant-drawer-body {
+    flex-grow: 1;
+    padding: 24px;
+    overflow: auto;
+    font-size: 14px;
+    line-height: 1.5715;
+    word-wrap: break-word;
+    background-color: #151c11 !important;
+}
+.ant-picker{
+    border: 1px none #c7c8c9!important;
+    border-bottom-style: solid!important;
+    color: white!important;
+}
+.ant-picker-suffix{
+    color: white!important;
+}
+.dashboardThead .ant-table-thead > tr > th {
+
+    background: #575753 !important;
+
+}
+dashboardIcons . {
+    background: transparent!important;
+}
+.ant-picker-input > input{
+    color:white!important;
 }
