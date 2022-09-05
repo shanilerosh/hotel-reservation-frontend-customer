@@ -14,6 +14,7 @@ import PrivateRoute from "../routing/PrivateRout";
 import CheckRoomAvailabilityComp from "../pages/client/reservation/Check-Room-Availability-Comp";
 import ManageReservationComp from "../pages/client/reservation/Manage-Reservation-Comp";
 import ReportsComp from "../pages/reports/Reports-Comp";
+import MakePaymentComp from "../pages/payments/Make-Payment-Comp";
 
 function AppRouter() {
   return (
@@ -30,6 +31,7 @@ function AppRouter() {
           <PrivateRoute exact path="/viewReports" component={ReportsComp} />
           <PrivateRoute exact path="/rtl" component={Rtl} />
           <PrivateRoute exact path="/profile" component={Profile} />
+          <PrivateRoute exact path="/makePayment" component={MakePaymentComp} />
         </Main>
       </Switch>
     </div>

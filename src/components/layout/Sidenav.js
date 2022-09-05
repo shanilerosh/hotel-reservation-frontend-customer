@@ -12,7 +12,7 @@ function Sidenav({color}) {
         <>
             <div className="header-col header-brand">
 
-                     <img style={{width:175,height:122,marginLeft:15,marginTop:-33}} src={Logo} alt="" />
+                <img style={{width: 175, height: 122, marginLeft: 15, marginTop: -33}} src={Logo} alt=""/>
 
             </div>
             <hr/>
@@ -49,6 +49,16 @@ function Sidenav({color}) {
                         <span className="label">Reports</span>
                     </NavLink>
                 </Menu.Item>
+                {/*<Menu.Item key="5" >*/}
+                <Menu.SubMenu title="Payment">
+                    <NavLink to="/makePayment">
+
+                        <span className="label">Make Payment</span>
+                    </NavLink>
+
+                </Menu.SubMenu>
+
+                {/*</Menu.Item>*/}
 
             </Menu>
 
