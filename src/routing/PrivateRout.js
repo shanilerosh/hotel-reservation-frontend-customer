@@ -9,7 +9,8 @@ function PrivateRoute({component: Component, ...rest}) {
     },[])
     const checkValidToken = () => {
         const token = sessionStorage.getItem('token');
-        console.log(token);
+        const roles = sessionStorage.getItem('roles');
+        console.log('roles----',roles);
         if (null!=token) {
             const decodedJwt = parseJwt(token);
             if (decodedJwt.exp * 1000 < Date.now()) {

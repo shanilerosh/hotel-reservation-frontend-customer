@@ -3,7 +3,6 @@ import {Button, Col, Divider, Drawer, Form, Input, Layout, message, Row, Typogra
 import Hotel from "../assets/images/hotel-img.jpeg";
 import "../assets/styles/main.css";
 import axios from "axios";
-import customerService from "../Service/CustomerService";
 
 const {Title} = Typography;
 const {Header, Footer, Content} = Layout;
@@ -31,15 +30,24 @@ function SignIn(props) {
         params.append('password', val.password);
         axios.post(`http://localhost:9008/login`, params)
             .then(res => {
-                console.log(res.data.access_token);
+                console.log(res.data);
                 sessionStorage.setItem("token", res.data.access_token)
+                const decodedJwt = parseJwt(res.data.access_token);
+                sessionStorage.setItem("roles", decodedJwt.roles)
+                sessionStorage.setItem("exp", decodedJwt.exp)
                 window.location.href = '/dashboard'
             }).catch(error => {
             message.error(error.response.data.message);
         })
 
     };
-
+    const parseJwt = (token) => {
+        try {
+            return JSON.parse(atob(token.split(".")[1]));
+        } catch (e) {
+            return null;
+        }
+    };
     const onFinishFailed = () => {
 
     };

@@ -3343,13 +3343,21 @@ path {
 }
 
 .sign-in-background {
-    height: auto;
-    left: 0;
-    min-height: 100%;
-    min-width: 860px;
+    /*height: auto;*/
+    /*left: 0;*/
+    /*min-height: 100%;*/
+    /*min-width: 860px;*/
+    /*position: fixed;*/
+    /*top: 0;*/
+    /*width: 100%;*/
+    /*z-index: -1;*/
+    height: 668px;
+    left: 0px;
+    /* min-height: 100%; */
+    /* min-width: 860px; */
     position: fixed;
     top: 0;
-    width: 100%;
+    width: 1356px;
     z-index: -1;
 }
 
@@ -3550,4 +3558,34 @@ dashboardIcons . {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #434d7c;
+}
+.ant-page-header-ghost {
+    background-color: white!important;
+}
+.web-page-slide-show {
+    height: 575px;
+    width: 1361px;
+    margin-left: 2px;
+}
+.circle {
+    height: 85px;
+    width: 1208px;
+    background-color: #fafafa;
+    border-radius: 50%;
+    display: inline-block;
+    margin-top: -8px;
+    z-index: 13;
+    position: fixed;
+    margin-left: 76px;
+}
+
+.ant-menu-horizontal {
+
+    line-height: 46px!important;
+    border: 0!important;
+    box-shadow: none!important;
+    height: 52px!important;
+    background: #26292c!important;
+    color: #fbfdff!important;
+
 }
