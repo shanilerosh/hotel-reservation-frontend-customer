@@ -1,9 +1,10 @@
-import {Button, Card, Col, DatePicker, Divider, Form, Input, message, Row, Space, Table, Tooltip} from "antd";
+import {Button, Card, Col, DatePicker, Divider, Empty, Form, Input, message, Row, Space, Table, Tooltip} from "antd";
 import React, {useState} from 'react';
 import {DeleteOutlined, SearchOutlined, StarOutlined} from "@ant-design/icons";
 import FilteredAvailableRoomsComp from "./Filtered-Available-Rooms-Comp";
 import EnterBookingDetailComp from "./Enter-Booking-Detail-Comp";
 import reservationService from "../../../Service/ReservationService";
+import LoadingComp from "../../../components/loadingComp/LoadingComp";
 
 
 function CheckRoomAvailabilityComp(props) {
@@ -13,10 +14,12 @@ function CheckRoomAvailabilityComp(props) {
         filteredRoomData: {}
     });
     const [isClickedBooking, onClickBooking] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedRows, setSelectedRowData] = useState([])
     const [filterations, setFilterations] = useState({})
 
     const checkRoomsAvailability = (values) => {
+        setIsLoading(true)
         setFilterations(values)
         values.page = 1
         values.size = 100
@@ -24,11 +27,13 @@ function CheckRoomAvailabilityComp(props) {
         values.sortOrder = "ASC"
         // values.arrivalTime=moment(values.arrivalTime).format("YYYY-MM-DD")
         // values.departureDateTime=moment(values.departureDateTime).format("YYYY-MM-DD")
-        reservationService.filterAvailableRooms(values).then((res: any) => {
+        reservationService.filterAvailableRooms(values).then((res) => {
             console.log(res)
             setLoadAvailableRooms({isLoadAvailableRooms: true, filteredRoomData: res.data.data})
+            setIsLoading(false)
         }).catch(error => {
             console.log(error)
+            setIsLoading(false)
             message.error("System error occurred")
         })
 
@@ -52,7 +57,7 @@ function CheckRoomAvailabilityComp(props) {
             title: 'Non Smoking',
             dataIndex: 'isNoneSmoking',
             width: 60,
-            render: (val: boolean) => {
+            render: (val) => {
                 return val ? "Yes" : "No"
             }
         },
@@ -96,7 +101,7 @@ function CheckRoomAvailabilityComp(props) {
         }
     ]
     const onAddedRoomDelete = (record) => {
-        let filteredCheck = selectedRows.filter((obj: any) => {
+        let filteredCheck = selectedRows.filter((obj) => {
             return record.roomId !== obj.roomId
         })
 
@@ -105,7 +110,7 @@ function CheckRoomAvailabilityComp(props) {
     const selectedRoomsRows = (selectedRoom) => {
 
         selectedRoom.forEach((room) => {
-            let filteredCheck = selectedRows.find((obj: any) => {
+            let filteredCheck = selectedRows.find((obj) => {
                 return obj.roomId === room.roomId
             })
             if (filteredCheck != undefined) {
@@ -119,9 +124,10 @@ function CheckRoomAvailabilityComp(props) {
     }
     return (
         <>
+            <LoadingComp loading={isLoading}/>
             {
                 isClickedBooking ?
-                    <EnterBookingDetailComp isFrom={"CREATE_RES"} selectedRooms={selectedRows} filterationData={filterations}/> :
+                    <EnterBookingDetailComp backBtnClicked={()=>onClickBooking(false)} isFrom={"CREATE_RES"} selectedRooms={selectedRows} filterationData={filterations}/> :
                     <Card
                         style={{width: '100%', marginTop: 50, background: 'rgba(0,0,0,0.42)', fontcolor: 'white'}}>
                         <Form layout="vertical" onFinish={checkRoomsAvailability}>
@@ -191,7 +197,7 @@ function CheckRoomAvailabilityComp(props) {
                             </Row>
                         </Form>
                         {
-                            isLoadAvailableRooms ?
+                            isLoadAvailableRooms && filteredRoomData.length ?
                                 <>
                                     <FilteredAvailableRoomsComp filteredRoomData={filteredRoomData}
                                                                 alreadyAddedRows={selectedRows}
@@ -219,7 +225,7 @@ function CheckRoomAvailabilityComp(props) {
                                         </Button>
                                     </Space>
                                 </>
-                                : ''
+                                : <Empty image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg" style={{color:"#56644f"}}/>
                         }
 
 

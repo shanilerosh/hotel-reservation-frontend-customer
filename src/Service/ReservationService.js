@@ -8,7 +8,7 @@ class ReservationService{
         return HttpService.get("/rooms/"+roomTypeId)
     }
     makeReservation=(data)=>{
-        return HttpService.post("/reservation/",data)
+        return HttpService.post("/reservation/clark/",data)
     }
 }
 const reservationService=new ReservationService()

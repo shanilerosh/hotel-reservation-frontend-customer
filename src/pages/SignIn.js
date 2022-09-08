@@ -35,6 +35,7 @@ function SignIn(props) {
                 const decodedJwt = parseJwt(res.data.access_token);
                 sessionStorage.setItem("roles", decodedJwt.roles)
                 sessionStorage.setItem("exp", decodedJwt.exp)
+                sessionStorage.setItem("userName", val.userName)
                 window.location.href = '/dashboard'
             }).catch(error => {
             message.error(error.response.data.message);

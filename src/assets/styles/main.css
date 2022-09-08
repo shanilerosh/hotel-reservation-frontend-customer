@@ -3589,3 +3589,28 @@ dashboardIcons . {
     color: #fbfdff!important;
 
 }
+.loader-container {
+    height: 100%;
+    opacity: 0.5;
+    filter: alpha(opacity=10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    /* display: block; */
+    left: 0px;
+    position: fixed;
+    top: 0px;
+    z-index: 9999;
+    background: white;
+}
+.ant-picker-content th {
+    height: 30px;
+    color: rgb(239 231 231)!important;
+    line-height: 30px;
+}
+.ant-picker-cell {
+    padding: 3px 0;
+    color: rgb(239 232 232)!important;
+    cursor: pointer;
+}
