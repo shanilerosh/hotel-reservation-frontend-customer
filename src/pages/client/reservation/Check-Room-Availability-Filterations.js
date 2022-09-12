@@ -5,12 +5,18 @@ import {SearchOutlined} from "@ant-design/icons";
 import axios from "axios";
 import reservationService from "../../../Service/ReservationService";
 import {BASE_URL} from "../../../util/Constants";
+import moment from "moment";
 
 const {Option} = Select;
 
 function CheckRoomsAvailabilityFilteration(props) {
     const [hotelNames, setHotelNames] = useState([])
+    const [checkInDateTime, setCheckInDateTime] = useState("")
 
+
+    const setCheckInDateTimeValue=(val)=>{
+        setCheckInDateTime(val)
+    }
     useEffect(() => {
         axios.get(BASE_URL+`/api/rooms/hotel-type`)
             .then(res => {
@@ -55,8 +61,9 @@ function CheckRoomsAvailabilityFilteration(props) {
                             rules={[{required: true, message: 'This field is required.'}]}
                         >
                             <DatePicker showTime format={"YYYY-MM-DD HH:mm"} placeholder={"Check In Date Time"}
+                                        disabledDate={d => d.isBefore(moment())}
                                         style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
-
+                                        onChange={setCheckInDateTimeValue}
                             />
 
                         </Form.Item>
@@ -66,6 +73,7 @@ function CheckRoomsAvailabilityFilteration(props) {
                             rules={[{required: true, message: 'This field is required.'}]}
                         >
                             <DatePicker format={"YYYY-MM-DD HH:mm"} showTime placeholder={"Check Out Date Time"}
+                                        disabledDate={d => d.isBefore(moment()) || d.isSameOrBefore(checkInDateTime)}
                                         style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                             />
 
@@ -75,9 +83,21 @@ function CheckRoomsAvailabilityFilteration(props) {
                         <Form.Item name={"roomCategory"}
                             rules={[{required: true, message: 'This field is required.'}]}
                         >
-                            <Input placeholder={"Room Type"}
-                                   style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                   type="text"/>
+                            <Select
+                                defaultValue={""}
+                                style={{
+                                    width: "100%",
+                                }}
+
+                            >
+
+                                <Option key={""}>Select Room Type</Option>
+                                <Option key={"BUDGET"}>Budget</Option>
+                                <Option key={"VIP"}>VIP</Option>
+                                <Option key={"LUXURY"}>Luxury</Option>
+
+
+                            </Select>
 
                         </Form.Item>
                     </Col>

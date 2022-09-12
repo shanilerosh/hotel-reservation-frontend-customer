@@ -58,7 +58,7 @@ function ManageReservationComp(props) {
         },
         {
             title: 'Reservation Status',
-            dataIndex: 'reservationStatus',
+            dataIndex: 'status',
             render: (text, rec) => (
                 <Space size="middle">
                     {

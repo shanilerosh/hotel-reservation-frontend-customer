@@ -146,6 +146,12 @@ function EnterBookingDetailComp(props) {
         })
 
     }
+    const disableFields=()=>{
+        if(props.isFrom==="CREATE_RES"){
+            return true;
+        }
+        return false;
+    }
     return (
         <>
             <LoadingComp loading={isLoading}/>
@@ -161,7 +167,7 @@ function EnterBookingDetailComp(props) {
                             <Form.Item name={"hotelType"}
                                        rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <Input type={"text"} placeholder={"Hotel ID"}
+                                <Input disabled={disableFields()} type={"text"} placeholder={"Hotel ID"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                 />
 
@@ -173,7 +179,7 @@ function EnterBookingDetailComp(props) {
                             <Form.Item name={"arrivalTime"}
                                        rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <DatePicker showTime placeholder={"Check In Date Time"}
+                                <DatePicker disabled={disableFields} showTime placeholder={"Check In Date Time"}
                                             style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
 
                                 />
@@ -184,7 +190,7 @@ function EnterBookingDetailComp(props) {
                             <Form.Item name={"departureDateTime"}
                                        rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <DatePicker showTime placeholder={"Check Out Date Time"}
+                                <DatePicker disabled={disableFields} showTime placeholder={"Check Out Date Time"}
                                             style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                 />
 
@@ -194,7 +200,7 @@ function EnterBookingDetailComp(props) {
                             <Form.Item name={"roomCategory"}
                                        rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <Input placeholder={"Room Type"}
+                                <Input disabled={disableFields} placeholder={"Room Type"}
 
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        type="text"/>
@@ -205,7 +211,7 @@ function EnterBookingDetailComp(props) {
                             <Form.Item name={"numberOfOccupants"}
                                        rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <Input placeholder={"No of Occupants"}
+                                <Input disabled={disableFields} placeholder={"No of Occupants"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        type="text"/>
 
