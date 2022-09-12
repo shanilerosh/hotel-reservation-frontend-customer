@@ -3,6 +3,7 @@ import {Button, Col, Divider, Drawer, Form, Input, Layout, message, Row, Typogra
 import Hotel from "../assets/images/hotel-img.jpeg";
 import "../assets/styles/main.css";
 import axios from "axios";
+import {BASE_URL} from "../util/Constants";
 
 const {Title} = Typography;
 const {Header, Footer, Content} = Layout;
@@ -28,7 +29,7 @@ function SignIn(props) {
         const params = new URLSearchParams();
         params.append('username', val.userName);
         params.append('password', val.password);
-        axios.post(`http://localhost:9008/login`, params)
+        axios.post(BASE_URL + `/login`, params)
             .then(res => {
                 console.log(res.data);
                 sessionStorage.setItem("token", res.data.access_token)
@@ -53,7 +54,7 @@ function SignIn(props) {
 
     };
     const registrationSubmit = (customerRegVals) => {
-        axios.post(`http://localhost:9008/api/customer/`, customerRegVals).then((res) => {
+        axios.post(BASE_URL+`/api/customer/`, customerRegVals).then((res) => {
             message.success("New Customer Added Successfully")
         }).catch((error) => {
 

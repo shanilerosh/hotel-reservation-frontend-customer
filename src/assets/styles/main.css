@@ -2358,7 +2358,8 @@ body {
 }
 
 .ant-form-item-label > label {
-    font-weight: 700;
+    font-weight: 400;
+    color: #c5bfbf;
 }
 
 .text-dark {

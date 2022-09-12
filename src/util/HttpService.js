@@ -1,4 +1,5 @@
 import axios from "axios";
+import {BASE_URL} from "./Constants";
 
 const HttpMethods = {
     GET: 'GET',
@@ -7,7 +8,7 @@ const HttpMethods = {
 };
 
 const _axios = axios.create();
-const baseUrl = "http://localhost:9008/api"
+const baseUrl = BASE_URL+"/api"
 const parseJwt = (token) => {
     try {
         return JSON.parse(atob(token.split(".")[1]));
@@ -44,7 +45,7 @@ const get = (path = "") => {
 //     return _axios.put(url, payload);
 // }
 //
-const post = (path = "", payload: any) => {
+const post = (path = "", payload) => {
     let url = baseUrl +  path;
     return _axios.post(url, payload,configure());
 }

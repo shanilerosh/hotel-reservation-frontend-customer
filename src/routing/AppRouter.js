@@ -15,7 +15,7 @@ import CheckRoomAvailabilityComp from "../pages/client/reservation/Check-Room-Av
 import ManageReservationComp from "../pages/client/reservation/Manage-Reservation-Comp";
 import ReportsComp from "../pages/reports/Reports-Comp";
 import MakePaymentComp from "../pages/payments/Make-Payment-Comp";
-import clientWebPage from "../pages/client/web-page/Client-Web-Page";
+import ClientWebPage from "../pages/client/web-page/ClientWebPage";
 
 function AppRouter() {
   return (
@@ -23,7 +23,7 @@ function AppRouter() {
       <Switch>
         <Route path="/sign-up" exact component={SignUp} />
         <Route path="/sign-in" exact component={SignIn} />
-        <Route path="/" exact component={clientWebPage} />
+        <Route path="/" exact component={ClientWebPage} />
         <Main>
           <PrivateRoute exact path="/dashboard" component={Home} />
           <PrivateRoute exact path="/tables" component={Tables} />

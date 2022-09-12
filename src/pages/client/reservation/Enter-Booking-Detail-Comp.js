@@ -1,26 +1,32 @@
 import {Button, Card, Checkbox, Col, DatePicker, Divider, Form, Input, message, Row, Space, Table} from "antd";
 import React, {useEffect, useState} from 'react';
-import {BackwardOutlined} from "@ant-design/icons";
+import {BackwardOutlined, FileSearchOutlined, SearchOutlined} from "@ant-design/icons";
 import reservationService from "../../../Service/ReservationService";
 import moment from "moment";
 import {UtilitiService} from "../../../util/UtilitiService";
 import LoadingComp from "../../../components/loadingComp/LoadingComp";
+import {ROLE_CUSTOMER} from "../../../util/Constants";
+import customerService from "../../../Service/CustomerService";
 
 function EnterBookingDetailComp(props) {
 
     const [isProceedWithCreditCard, setProceedWithCreditCard] = useState(false);
     const [totalRoomPrice, setTotalRoomPrice] = useState(0);
     const [isLoading, setLoading] = useState(true);
+    const [resForm] = Form.useForm();
     useEffect(() => {
         setTimeout(() => {
             setLoading(false)
         }, 500)
+        if (props.isFrom === "CREATE_RES") {
+            calculateTotalRoomCost()
 
+        }
     })
     const onFinish = (values) => {
         setLoading(true)
         let customerDto = {
-            custId: "",
+            custId: values.custId,
             nicPass: values.nicPass,
             customerName: values.customerName,
             country: values.country,
@@ -37,18 +43,28 @@ function EnterBookingDetailComp(props) {
             reservationStatus: "OPEN",
             isCreditCardApplicable: isProceedWithCreditCard,
             creditCardNumber: values.creditCardNumber,
-            expirationDate: moment(values.expirationDate).format("YYYY-MM-DD"),
+            expirationDate: isProceedWithCreditCard?moment(values.expirationDate).format("YYYY-MM-DD"):"",
             cardCsv: values.cardCsv,
             customerDto: customerDto,
             username: UtilitiService.getUserName()
         }
-        reservationService.makeReservation(reservationSubmitData).then((res) => {
+        if (UtilitiService.getRole() === ROLE_CUSTOMER) {
+            makeReservationAsCustomer(reservationSubmitData)
+        } else {
+            makeReservationAsClark(reservationSubmitData)
+        }
+
+
+    }
+
+    const makeReservationAsClark = (reservationData) => {
+        reservationService.makeReservationClark(reservationData).then((res) => {
             message.success("Reservation created successfully")
             setLoading(false)
         }).catch((error) => {
             console.log(error);
             setLoading(false)
-            if (error.response.data.status) {
+            if (error.response.data.status === 500) {
                 message.error("System Error Occurred")
             } else {
                 message.error(error.response.data.message)
@@ -56,7 +72,21 @@ function EnterBookingDetailComp(props) {
 
         })
     }
+    const makeReservationAsCustomer = (reservationData) => {
+        reservationService.makeReservationCustomer(reservationData).then((res) => {
+            message.success("Reservation created successfully")
+            setLoading(false)
+        }).catch((error) => {
+            console.log(error);
+            setLoading(false)
+            if (error.response.data.status === 500) {
+                message.error("System Error Occurred")
+            } else {
+                message.error(error.response.data.message)
+            }
 
+        })
+    }
     const selectedRoomsColumns = [
         {
             title: 'Room ID',
@@ -71,16 +101,11 @@ function EnterBookingDetailComp(props) {
         {
             title: 'Room Price',
             dataIndex: 'roomPrice',
-            align:'right',
+            align: 'right',
             width: 60
         },
     ]
-    useEffect(() => {
-        if (props.isFrom === "CREATE_RES") {
-            calculateTotalRoomCost()
 
-        }
-    }, [])
     const calculateTotalRoomCost = () => {
         let totalRoomCost = 0
         props.selectedRooms.forEach((room) => {
@@ -88,20 +113,49 @@ function EnterBookingDetailComp(props) {
         })
         setTotalRoomPrice(totalRoomCost)
     }
+    const getInitialValues = () => {
+        if (props.isFrom === "CREATE_RES")
+            return {
+                numberOfOccupants: props.filterationData.numberOfOccupants,
+                roomCategory: props.filterationData.roomCategory,
+                departureDateTime: props.filterationData.departureDateTime,
+                arrivalTime: props.filterationData.arrivalTime,
+                hotelType: props.filterationData.hotelType
+            }
+
+    }
+    const fetchCustomerDetailByNic = () => {
+        customerService.getCustDetailByNic(resForm.getFieldValue("nicPass")).then((res) => {
+            console.log('customer', res);
+            resForm.setFieldsValue({
+                customerName: res.data.customerName,
+                country: res.data.country,
+                city: res.data.city,
+                address: res.data.address,
+                contactNumber: res.data.contactNumber,
+                email: res.data.email,
+                custId: res.data.custId
+            })
+
+        }).catch((error) => {
+            if (error.response.data.status === 500) {
+                message.error("System Error Occurred")
+            } else {
+                message.error(error.response.data.message)
+            }
+        })
+
+    }
     return (
         <>
             <LoadingComp loading={isLoading}/>
             <Card
                 style={{width: '100%', marginTop: 50, background: 'rgba(0,0,0,0.42)', fontcolor: 'white'}}>
                 <Form layout="vertical" onFinish={onFinish}
-                      initialValues={props.isFrom === "CREATE_RES" ? {
-                          numberOfOccupants: props.filterationData.numberOfOccupants,
-                          roomCategory: props.filterationData.roomCategory,
-                          departureDateTime: props.filterationData.departureDateTime,
-                          arrivalTime: props.filterationData.arrivalTime,
-                          hotelType: props.filterationData.hotelType
-                      } : {}}
+                      initialValues={getInitialValues()}
+                      form={resForm}
                 >
+
                     <Row gutter={16}>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                             <Form.Item name={"hotelType"}
@@ -112,6 +166,8 @@ function EnterBookingDetailComp(props) {
                                 />
 
                             </Form.Item>
+
+
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                             <Form.Item name={"arrivalTime"}
@@ -159,13 +215,21 @@ function EnterBookingDetailComp(props) {
                     </Row>
                     <Divider style={{backgroundColor: 'rgba(75,73,73,0.23)'}}/>
                     <Row gutter={16}>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                        <Col xs={7} sm={7} md={7} lg={7} xl={7}>
                             <Form.Item name={"nicPass"}
                                        rules={[{required: true, message: 'This field is required.'}]}>
                                 <Input type={"text"} placeholder={"NIC/Passport"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                 />
                             </Form.Item>
+
+                        </Col>
+                        <Col xs={1} sm={1} md={1} lg={1} xl={1}>
+                            <Form.Item name={"custId"}>
+                                <FileSearchOutlined onClick={fetchCustomerDetailByNic}
+                                                    style={{color: '#f1a102', marginTop: 13, fontSize: 20}}/>
+                            </Form.Item>
+
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                             <Form.Item name={"customerName"}
@@ -307,7 +371,7 @@ function EnterBookingDetailComp(props) {
                                 backgroundColor: 'transparent',
                                 borderColor: '#ffffff',
                                 width: '100%'
-                            }} onClick={()=>props.backBtnClicked()}><BackwardOutlined/>Back</Button>
+                            }} onClick={() => props.backBtnClicked()}><BackwardOutlined/>Back</Button>
                         </Form.Item>
                         <Form.Item>
                             <Button type="primary" htmlType={"submit"}>

@@ -5,6 +5,7 @@ import FilteredAvailableRoomsComp from "./Filtered-Available-Rooms-Comp";
 import EnterBookingDetailComp from "./Enter-Booking-Detail-Comp";
 import reservationService from "../../../Service/ReservationService";
 import LoadingComp from "../../../components/loadingComp/LoadingComp";
+import CheckRoomsAvailabilityFilteration from "./Check-Room-Availability-Filterations";
 
 
 function CheckRoomAvailabilityComp(props) {
@@ -130,72 +131,7 @@ function CheckRoomAvailabilityComp(props) {
                     <EnterBookingDetailComp backBtnClicked={()=>onClickBooking(false)} isFrom={"CREATE_RES"} selectedRooms={selectedRows} filterationData={filterations}/> :
                     <Card
                         style={{width: '100%', marginTop: 50, background: 'rgba(0,0,0,0.42)', fontcolor: 'white'}}>
-                        <Form layout="vertical" onFinish={checkRoomsAvailability}>
-                            <Row gutter={16}>
-                                <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                                    <Form.Item name={"hotelType"}
-                                        // rules={[{required: true, message: 'This field is required.'}]}
-                                    >
-                                        <Input type={"text"} placeholder={"Hotel ID"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                        />
-
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                                    <Form.Item name={"arrivalTime"}
-                                        // rules={[{required: true, message: 'This field is required.'}]}
-                                    >
-                                        <DatePicker  placeholder={"Arrival"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
-
-                                        />
-
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                                    <Form.Item name={"departureDateTime"}
-                                        // rules={[{required: true, message: 'This field is required.'}]}
-                                    >
-                                        <DatePicker  placeholder={"Departure"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
-                                        />
-
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                                    <Form.Item name={"roomCategory"}
-                                        // rules={[{required: true, message: 'This field is required.'}]}
-                                    >
-                                        <Input placeholder={"Room Type"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               type="text"/>
-
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                                    <Form.Item name={"numberOfOccupants"}
-                                        // rules={[{required: true, message: 'This field is required.'}]}
-                                    >
-                                        <Input placeholder={"No of Occupants"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               type="text"/>
-
-                                    </Form.Item>
-                                </Col>
-
-                            </Row>
-                            <Row gutter={16}>
-                                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                    <Space size={16} style={{float: 'right', marginTop: 10}}>
-                                        <Form.Item>
-                                            <Button type="primary" htmlType={"submit"}><SearchOutlined/>Check
-                                                Availability</Button>
-                                        </Form.Item>
-                                    </Space>
-                                </Col>
-                            </Row>
-                        </Form>
+                        <CheckRoomsAvailabilityFilteration checkRoomsAvailability={(values)=>checkRoomsAvailability(values)}/>
                         {
                             isLoadAvailableRooms && filteredRoomData.length ?
                                 <>
