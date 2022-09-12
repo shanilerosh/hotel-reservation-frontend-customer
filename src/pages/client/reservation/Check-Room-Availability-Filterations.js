@@ -29,7 +29,7 @@ function CheckRoomsAvailabilityFilteration(props) {
                 <Row gutter={16}>
                     <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                         <Form.Item name={"hotelType"}
-                            // rules={[{required: true, message: 'This field is required.'}]}
+                            rules={[{required: true, message: 'This field is required.'}]}
                         >
                             <Select
                                 defaultValue={""}
@@ -52,9 +52,9 @@ function CheckRoomsAvailabilityFilteration(props) {
                     </Col>
                     <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                         <Form.Item name={"arrivalTime"}
-                            // rules={[{required: true, message: 'This field is required.'}]}
+                            rules={[{required: true, message: 'This field is required.'}]}
                         >
-                            <DatePicker placeholder={"Arrival"}
+                            <DatePicker showTime format={"YYYY-MM-DD HH:mm"} placeholder={"Check In Date Time"}
                                         style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
 
                             />
@@ -63,9 +63,9 @@ function CheckRoomsAvailabilityFilteration(props) {
                     </Col>
                     <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                         <Form.Item name={"departureDateTime"}
-                            // rules={[{required: true, message: 'This field is required.'}]}
+                            rules={[{required: true, message: 'This field is required.'}]}
                         >
-                            <DatePicker placeholder={"Departure"}
+                            <DatePicker format={"YYYY-MM-DD HH:mm"} showTime placeholder={"Check Out Date Time"}
                                         style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                             />
 
@@ -73,7 +73,7 @@ function CheckRoomsAvailabilityFilteration(props) {
                     </Col>
                     <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                         <Form.Item name={"roomCategory"}
-                            // rules={[{required: true, message: 'This field is required.'}]}
+                            rules={[{required: true, message: 'This field is required.'}]}
                         >
                             <Input placeholder={"Room Type"}
                                    style={{background: 'rgba(0,0,0,0)', color: 'white'}}
@@ -83,7 +83,7 @@ function CheckRoomsAvailabilityFilteration(props) {
                     </Col>
                     <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                         <Form.Item name={"numberOfOccupants"}
-                            // rules={[{required: true, message: 'This field is required.'}]}
+                            rules={[{required: true, message: 'This field is required.'}]}
                         >
                             <Input placeholder={"No of Occupants"}
                                    style={{background: 'rgba(0,0,0,0)', color: 'white'}}

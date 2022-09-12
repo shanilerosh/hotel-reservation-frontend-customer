@@ -6,6 +6,7 @@ import EnterBookingDetailComp from "./Enter-Booking-Detail-Comp";
 import reservationService from "../../../Service/ReservationService";
 import LoadingComp from "../../../components/loadingComp/LoadingComp";
 import CheckRoomsAvailabilityFilteration from "./Check-Room-Availability-Filterations";
+import moment from "moment";
 
 
 function CheckRoomAvailabilityComp(props) {
@@ -26,8 +27,8 @@ function CheckRoomAvailabilityComp(props) {
         values.size = 100
         values.sortField = ""
         values.sortOrder = "ASC"
-        // values.arrivalTime=moment(values.arrivalTime).format("YYYY-MM-DD")
-        // values.departureDateTime=moment(values.departureDateTime).format("YYYY-MM-DD")
+        // values.arrivalTime = moment(values.arrivalTime).format("YYYY-MM-DD HH:mm")
+        // values.departureDateTime = moment(values.departureDateTime).format("YYYY-MM-DD HH:mm")
         reservationService.filterAvailableRooms(values).then((res) => {
             console.log(res)
             setLoadAvailableRooms({isLoadAvailableRooms: true, filteredRoomData: res.data.data})
@@ -128,10 +129,12 @@ function CheckRoomAvailabilityComp(props) {
             <LoadingComp loading={isLoading}/>
             {
                 isClickedBooking ?
-                    <EnterBookingDetailComp backBtnClicked={()=>onClickBooking(false)} isFrom={"CREATE_RES"} selectedRooms={selectedRows} filterationData={filterations}/> :
+                    <EnterBookingDetailComp backBtnClicked={() => onClickBooking(false)} isFrom={"CREATE_RES"}
+                                            selectedRooms={selectedRows} filterationData={filterations}/> :
                     <Card
                         style={{width: '100%', marginTop: 50, background: 'rgba(0,0,0,0.42)', fontcolor: 'white'}}>
-                        <CheckRoomsAvailabilityFilteration checkRoomsAvailability={(values)=>checkRoomsAvailability(values)}/>
+                        <CheckRoomsAvailabilityFilteration
+                            checkRoomsAvailability={(values) => checkRoomsAvailability(values)}/>
                         {
                             isLoadAvailableRooms && filteredRoomData.length ?
                                 <>
@@ -157,11 +160,12 @@ function CheckRoomAvailabilityComp(props) {
                                     </Card>
                                     <Space size={16} style={{float: 'right', marginTop: 10}}>
                                         <Button type="primary" onClick={loadBookingDetails}>
-                                            <StarOutlined />Book Now
+                                            <StarOutlined/>Book Now
                                         </Button>
                                     </Space>
                                 </>
-                                : <Empty image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg" style={{color:"#56644f"}}/>
+                                : <Empty image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                                         style={{color: "#56644f"}}/>
                         }
 
 

@@ -18,7 +18,9 @@ class ReservationService {
     makeReservationCustomer = (data) => {
         return HttpService.post("/reservation/", data)
     }
-
+    fetchReservations = (filterData,status) => {
+        return HttpService.post("/reservation/clark/"+status, filterData)
+    }
 
 }
 

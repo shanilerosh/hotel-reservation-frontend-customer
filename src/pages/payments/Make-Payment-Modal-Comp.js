@@ -55,7 +55,7 @@ function MakePaymentModalComp(props) {
                                     <Form.Item name={"arrivalTime"}
                                         // rules={[{required: true, message: 'This field is required.'}]}
                                     >
-                                        <DatePicker placeholder={"Arrival"}
+                                        <DatePicker showTime placeholder={"Checked In Date Time"}
                                                     style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
 
                                         />
@@ -66,7 +66,7 @@ function MakePaymentModalComp(props) {
                                     <Form.Item name={"departureDateTime"}
                                         // rules={[{required: true, message: 'This field is required.'}]}
                                     >
-                                        <DatePicker placeholder={"Departure"}
+                                        <DatePicker showTime placeholder={"Checked Out Date Time"}
                                                     style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                         />
 
@@ -100,42 +100,42 @@ function MakePaymentModalComp(props) {
                                     <Form.Item>
                                         <Input type={"text"} placeholder={"NIC/Passport"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               type="text"/>
+                                              />
                                     </Form.Item>
                                 </Col>
                                 <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                                     <Form.Item>
                                         <Input type={"text"} placeholder={"Customer Name"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               type="text"/>
+                                               />
                                     </Form.Item>
                                 </Col>
                                 <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                                     <Form.Item>
                                         <Input type={"text"} placeholder={"Country"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               type="text"/>
+                                               />
                                     </Form.Item>
                                 </Col>
                                 <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                                     <Form.Item>
                                         <Input type={"text"} placeholder={"City"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               type="text"/>
+                                               />
                                     </Form.Item>
                                 </Col>
                                 <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                                     <Form.Item>
                                         <Input type={"text"} placeholder={"Address"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               type="text"/>
+                                               />
                                     </Form.Item>
                                 </Col>
                                 <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                                     <Form.Item>
                                         <Input type={"text"} placeholder={"Contact Number"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               type="text"/>
+                                               />
                                     </Form.Item>
                                 </Col>
 
@@ -188,7 +188,7 @@ function MakePaymentModalComp(props) {
                                     <Form.Item>
                                         <Input type={"text"} placeholder={"Credit card number"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               type="text"/>
+                                               />
 
                                     </Form.Item>
                                 </Col>
@@ -196,7 +196,7 @@ function MakePaymentModalComp(props) {
                                     <Form.Item>
                                         <Input type={"text"} placeholder={"Name on card"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               type="text"/>
+                                               />
 
                                     </Form.Item>
                                 </Col>
@@ -222,7 +222,7 @@ function MakePaymentModalComp(props) {
                                     <Form.Item>
                                         <Input type={"text"} placeholder={"Given Amount"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               type="text"/>
+                                               />
 
                                     </Form.Item>
                                 </Col>
@@ -230,7 +230,7 @@ function MakePaymentModalComp(props) {
                                     <Form.Item>
                                         <Input type={"text"} placeholder={"Balance"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               type="text"/>
+                                               />
 
                                     </Form.Item>
                                 </Col>

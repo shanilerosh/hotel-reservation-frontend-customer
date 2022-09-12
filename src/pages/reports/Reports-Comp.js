@@ -40,7 +40,7 @@ function ReportsComp(props) {
                                 <>
                                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
                                         <Form.Item>
-                                            <DatePicker  placeholder={"Booking date from"}
+                                            <DatePicker  showTime placeholder={"Booking date from"}
                                                          style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
                                             />
 
@@ -48,7 +48,7 @@ function ReportsComp(props) {
                                     </Col>
                                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
                                         <Form.Item>
-                                            <DatePicker  placeholder={"Booking date to"}
+                                            <DatePicker  showTime placeholder={"Booking date to"}
                                                          style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
                                             />
                                         </Form.Item>

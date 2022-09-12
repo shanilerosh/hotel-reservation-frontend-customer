@@ -43,10 +43,12 @@ function EnterBookingDetailComp(props) {
             reservationStatus: "OPEN",
             isCreditCardApplicable: isProceedWithCreditCard,
             creditCardNumber: values.creditCardNumber,
-            expirationDate: isProceedWithCreditCard?moment(values.expirationDate).format("YYYY-MM-DD"):"",
+            expirationDate: isProceedWithCreditCard ? moment(values.expirationDate).format("YYYY-MM-DD") : "",
             cardCsv: values.cardCsv,
             customerDto: customerDto,
-            username: UtilitiService.getUserName()
+            username: UtilitiService.getUserName(),
+            promisedCheckedInTime: values.arrivalTime,
+            promisedCheckedOutTime: values.departureDateTime
         }
         if (UtilitiService.getRole() === ROLE_CUSTOMER) {
             makeReservationAsCustomer(reservationSubmitData)
@@ -138,11 +140,9 @@ function EnterBookingDetailComp(props) {
             })
 
         }).catch((error) => {
-            if (error.response.data.status === 500) {
-                message.error("System Error Occurred")
-            } else {
-                message.error(error.response.data.message)
-            }
+
+            message.error(error.response.data.message)
+
         })
 
     }
@@ -173,7 +173,7 @@ function EnterBookingDetailComp(props) {
                             <Form.Item name={"arrivalTime"}
                                        rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <DatePicker placeholder={"Arrival"}
+                                <DatePicker showTime placeholder={"Check In Date Time"}
                                             style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
 
                                 />
@@ -184,7 +184,7 @@ function EnterBookingDetailComp(props) {
                             <Form.Item name={"departureDateTime"}
                                        rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <DatePicker placeholder={"Departure"}
+                                <DatePicker showTime placeholder={"Check Out Date Time"}
                                             style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                 />
 
