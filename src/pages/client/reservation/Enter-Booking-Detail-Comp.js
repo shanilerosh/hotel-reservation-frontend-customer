@@ -163,10 +163,10 @@ function EnterBookingDetailComp(props) {
 
                     <Row gutter={16}>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"hotelType"}
+                            <Form.Item name={"hotelType"} label={"Hotel Location"}
                                        rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <Input disabled={disableFields()} type={"text"} placeholder={"Hotel ID"}
+                                <Input disabled={disableFields()} type={"text"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                 />
 
@@ -175,10 +175,10 @@ function EnterBookingDetailComp(props) {
 
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"arrivalTime"}
+                            <Form.Item name={"arrivalTime"} label={"Check In Date Time"}
                                        rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <DatePicker disabled={disableFields} showTime placeholder={"Check In Date Time"}
+                                <DatePicker disabled={disableFields()} showTime
                                             style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
 
                                 />
@@ -186,20 +186,20 @@ function EnterBookingDetailComp(props) {
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"departureDateTime"}
+                            <Form.Item name={"departureDateTime"} label={"Check Out Date Time"}
                                        rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <DatePicker disabled={disableFields} showTime placeholder={"Check Out Date Time"}
+                                <DatePicker disabled={disableFields()} showTime
                                             style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                 />
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"roomCategory"}
+                            <Form.Item name={"roomCategory"} label={"Room Type"}
                                        rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <Input disabled={disableFields} placeholder={"Room Type"}
+                                <Input disabled={disableFields()}
 
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        type="text"/>
@@ -207,10 +207,10 @@ function EnterBookingDetailComp(props) {
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"numberOfOccupants"}
+                            <Form.Item name={"numberOfOccupants"} label={"No of Occupants"}
                                        rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <Input disabled={disableFields} placeholder={"No of Occupants"}
+                                <Input disabled={disableFields()}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        type="text"/>
 
@@ -221,9 +221,9 @@ function EnterBookingDetailComp(props) {
                     <Divider style={{backgroundColor: 'rgba(75,73,73,0.23)'}}/>
                     <Row gutter={16}>
                         <Col xs={7} sm={7} md={7} lg={7} xl={7}>
-                            <Form.Item name={"nicPass"}
+                            <Form.Item name={"nicPass"} label={"NIC/Passport"}
                                        rules={[{required: true, message: 'This field is required.'}]}>
-                                <Input type={"text"} placeholder={"NIC/Passport"}
+                                <Input type={"text"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                 />
                             </Form.Item>
@@ -232,61 +232,61 @@ function EnterBookingDetailComp(props) {
                         <Col xs={1} sm={1} md={1} lg={1} xl={1}>
                             <Form.Item name={"custId"}>
                                 <FileSearchOutlined onClick={fetchCustomerDetailByNic}
-                                                    style={{color: '#f1a102', marginTop: 13, fontSize: 20}}/>
+                                                    style={{color: '#f1a102', marginTop: 40, fontSize: 20}}/>
                             </Form.Item>
 
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"customerName"}
+                            <Form.Item name={"customerName"} label={"Customer Name"}
                                        rules={[{required: true, message: 'This field is required.'}]}>
-                                <Input type={"text"} placeholder={"Customer Name"}
+                                <Input type={"text"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                 />
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"country"}
+                            <Form.Item name={"country"} label={"Country"}
                                        rules={[{required: true, message: 'This field is required.'}]}>
-                                <Input type={"text"} placeholder={"Country"}
+                                <Input type={"text"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                 />
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"city"}
+                            <Form.Item name={"city"} label={"City"}
                                        rules={[{required: true, message: 'This field is required.'}]}>
-                                <Input type={"text"} placeholder={"City"}
+                                <Input type={"text"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                 />
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"address"}
+                            <Form.Item name={"address"} label={"Address"}
                                        rules={[{required: true, message: 'This field is required.'}]}>
-                                <Input type={"text"} placeholder={"Address"}
+                                <Input type={"text"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                 />
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"contactNumber"}
+                            <Form.Item name={"contactNumber"} label={"Contact Number"}
                                        rules={[{required: true, message: 'This field is required.'}]}>
-                                <Input type={"text"} placeholder={"Contact Number"}
+                                <Input type={"text"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                 />
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"email"}
+                            <Form.Item name={"email"} label={"Email"}
                                        rules={[{required: true, message: 'This field is required.'}]}>
-                                <Input type={"text"} placeholder={"Email"}
+                                <Input type={"text"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                 />
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item>
-                                <Input type={"text"} placeholder={"Special Requirement"}
+                            <Form.Item label={"Special Request"}>
+                                <Input type={"text"}
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                 />
                             </Form.Item>
@@ -332,36 +332,27 @@ function EnterBookingDetailComp(props) {
                         isProceedWithCreditCard ?
                             <Row gutter={16} style={{marginTop: 25}}>
                                 <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                                    <Form.Item name={"creditCardNumber"}
+                                    <Form.Item name={"creditCardNumber"} label={"Credit card number"}
                                                rules={[{required: true, message: 'This field is required.'}]}>
-                                        <Input type={"text"} placeholder={"Credit card number"}
+                                        <Input type={"text"}
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                         />
 
                                     </Form.Item>
                                 </Col>
                                 <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                                    <Form.Item name={"cardHolderName"}
+                                    <Form.Item name={"expirationDate"} label={"Expire Date"}
                                                rules={[{required: true, message: 'This field is required.'}]}>
-                                        <Input type={"text"} placeholder={"Name on card"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                        />
-
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                                    <Form.Item name={"expirationDate"}
-                                               rules={[{required: true, message: 'This field is required.'}]}>
-                                        <DatePicker placeholder={"Expire Date"}
+                                        <DatePicker
                                                     style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                         />
 
                                     </Form.Item>
                                 </Col>
                                 <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                                    <Form.Item name={"cardCsv"}
+                                    <Form.Item name={"cardCsv"} label={"CSV"}
                                                rules={[{required: true, message: 'This field is required.'}]}>
-                                        <Input placeholder={"CSV"}
+                                        <Input
                                                style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                                type="text"/>
 

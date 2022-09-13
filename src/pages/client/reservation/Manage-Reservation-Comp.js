@@ -211,95 +211,95 @@ function ManageReservationComp(props) {
                 <Form layout="vertical" onFinish={searchReservations}>
                     <Row gutter={16}>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"promisedCheckedInTimeFrom"}>
-                                <DatePicker showTime placeholder={"Checked In Date Time From"}
+                            <Form.Item name={"promisedCheckedInTimeFrom"} label={"Checked In Date Time From"}>
+                                <DatePicker showTime
                                             style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                 />
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"promisedCheckedInTimeTo"}>
-                                <DatePicker showTime placeholder={"Checked In Date Time To"}
+                            <Form.Item name={"promisedCheckedInTimeTo"} label={"Checked In Date Time To"}>
+                                <DatePicker showTime
                                             style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                 />
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"promisedCheckedOutTimeFrom"}>
-                                <DatePicker showTime placeholder={"Checked Out Date Time From"}
+                            <Form.Item name={"promisedCheckedOutTimeFrom"} label={"Checked Out Date Time From"}>
+                                <DatePicker showTime
                                             style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                 />
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"promisedCheckedOutTimeTo"}>
-                                <DatePicker showTime placeholder={"Checked Out Date Time To"}
+                            <Form.Item name={"promisedCheckedOutTimeTo"} label={"Checked Out Date Time To"}>
+                                <DatePicker showTime
                                             style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                 />
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"actualCheckedInTimeFrom"}>
-                                <DatePicker showTime placeholder={"Actual Checked In Date Time From"}
+                            <Form.Item name={"actualCheckedInTimeFrom"} label={"Actual Checked In Date Time From"}>
+                                <DatePicker showTime
                                             style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                 />
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"actualCheckedInTimeTO"}>
-                                <DatePicker showTime placeholder={"Actual Checked In Date Time To"}
+                            <Form.Item name={"actualCheckedInTimeTO"} label={"Actual Checked In Date Time To"}>
+                                <DatePicker showTime
                                             style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                 />
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"actualCheckedOutTimeFrom"}>
-                                <DatePicker showTime placeholder={"Actual Checked Out Date Time From"}
+                            <Form.Item name={"actualCheckedOutTimeFrom"} label={"Actual Checked Out Date Time From"}>
+                                <DatePicker showTime
                                             style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                 />
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"actualCheckedOutTimeTO"}>
-                                <DatePicker showTime placeholder={"Actual Checked Out Date Time To"}
+                            <Form.Item name={"actualCheckedOutTimeTO"} label={"Actual Checked Out Date Time To"}>
+                                <DatePicker showTime
                                             style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                 />
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"nicPass"}>
-                                <Input placeholder={"NIC/Passport"}
+                            <Form.Item name={"nicPass"} label={"NIC/Passport"}>
+                                <Input
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        type="text"/>
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"customerName"}>
-                                <Input placeholder={"Customer Name"}
+                            <Form.Item name={"customerName"} label={"Customer Name"}>
+                                <Input
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        type="text"/>
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"customerCountry"}>
-                                <Input placeholder={"Country"}
+                            <Form.Item name={"customerCountry"} label={"Country"}>
+                                <Input
                                        style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                        type="text"/>
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"status"}>
+                            <Form.Item name={"status"} label={"Reservation Status"}>
                                 <Select
                                     defaultValue={""}
                                     style={{

@@ -129,12 +129,17 @@ function CheckRoomAvailabilityComp(props) {
             <LoadingComp loading={isLoading}/>
             {
                 isClickedBooking ?
+
                     <EnterBookingDetailComp backBtnClicked={() => onClickBooking(false)} isFrom={"CREATE_RES"}
                                             selectedRooms={selectedRows} filterationData={filterations}/> :
+
                     <Card
                         style={{width: '100%', marginTop: 50, background: 'rgba(0,0,0,0.42)', fontcolor: 'white'}}>
+
                         <CheckRoomsAvailabilityFilteration
                             checkRoomsAvailability={(values) => checkRoomsAvailability(values)}/>
+
+
                         {
                             isLoadAvailableRooms && filteredRoomData.length ?
                                 <>

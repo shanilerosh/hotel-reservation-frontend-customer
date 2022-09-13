@@ -34,7 +34,7 @@ function CheckRoomsAvailabilityFilteration(props) {
             <Form layout="vertical" onFinish={checkRoomsAvailability}>
                 <Row gutter={16}>
                     <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                        <Form.Item name={"hotelType"}
+                        <Form.Item name={"hotelType"} label={"Hotel Location"}
                             rules={[{required: true, message: 'This field is required.'}]}
                         >
                             <Select
@@ -57,10 +57,10 @@ function CheckRoomsAvailabilityFilteration(props) {
                         </Form.Item>
                     </Col>
                     <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                        <Form.Item name={"arrivalTime"}
+                        <Form.Item name={"arrivalTime"} label={"Check In Date Time"}
                             rules={[{required: true, message: 'This field is required.'}]}
                         >
-                            <DatePicker showTime format={DATE_FORMAT_YYYY_MM_DD_HH_MM} placeholder={"Check In Date Time"}
+                            <DatePicker showTime format={DATE_FORMAT_YYYY_MM_DD_HH_MM}
                                         disabledDate={d => d.isBefore(moment())}
                                         style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                         onChange={setCheckInDateTimeValue}
@@ -69,10 +69,10 @@ function CheckRoomsAvailabilityFilteration(props) {
                         </Form.Item>
                     </Col>
                     <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                        <Form.Item name={"departureDateTime"}
+                        <Form.Item name={"departureDateTime"} label={"Check Out Date Time"}
                             rules={[{required: true, message: 'This field is required.'}]}
                         >
-                            <DatePicker format={DATE_FORMAT_YYYY_MM_DD_HH_MM} showTime placeholder={"Check Out Date Time"}
+                            <DatePicker format={DATE_FORMAT_YYYY_MM_DD_HH_MM} showTime
                                         disabledDate={d => d.isBefore(moment()) || d.isSameOrBefore(checkInDateTime)}
                                         style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                             />
@@ -80,7 +80,7 @@ function CheckRoomsAvailabilityFilteration(props) {
                         </Form.Item>
                     </Col>
                     <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                        <Form.Item name={"roomCategory"}
+                        <Form.Item name={"roomCategory"} label={"Room Type"}
                             rules={[{required: true, message: 'This field is required.'}]}
                         >
                             <Select
@@ -102,10 +102,10 @@ function CheckRoomsAvailabilityFilteration(props) {
                         </Form.Item>
                     </Col>
                     <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                        <Form.Item name={"numberOfOccupants"}
+                        <Form.Item name={"numberOfOccupants"} label={"No of Occupants"}
                             rules={[{required: true, message: 'This field is required.'}]}
                         >
-                            <Input placeholder={"No of Occupants"}
+                            <Input
                                    style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                    type="text"/>
 
