@@ -14,17 +14,22 @@ import {
     Tag,
     Tooltip
 } from "antd";
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {EditOutlined, MessageOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
 import Modal from "antd/es/modal/Modal";
 import EnterBookingDetailComp from "./Enter-Booking-Detail-Comp";
 import reservationService from "../../../Service/ReservationService";
 import LoadingComp from "../../../components/loadingComp/LoadingComp";
+import Text from "antd/es/typography/Text";
+import moment from "moment";
+import ReservationDataComp from "./Reservation-Deta-Comp";
+import {DATE_FORMAT_YYYY_MM_DD_HH_MM} from "../../../util/Constants";
 
 const {Option} = Select;
 
 function ManageReservationComp(props) {
-    const [isReDetailModalVisible, setReDetailModalVisible] = useState(false);
+    const [{isModalVisible, selectedRecReservationId}, setReDetailModalVisible] = useState(
+        {isModalVisible: false, selectedRecReservationId: ""});
     const [isLoading, setLoading] = useState(false);
     const [reservationData, setReservationData] = useState(false);
     const columns = [
@@ -35,22 +40,47 @@ function ManageReservationComp(props) {
         {
             title: 'Check In Date Time',
             dataIndex: 'promisedCheckedInTime',
+            render: (text) => (
+                <>
+                    {text != null ? moment(text).format(DATE_FORMAT_YYYY_MM_DD_HH_MM) : "N/A"}
+                </>
+            )
         },
         {
             title: 'Check Out Date Time',
             dataIndex: 'promisedCheckedOutTime',
+            render: (text) => (
+                <>
+                    {text != null ? moment(text).format(DATE_FORMAT_YYYY_MM_DD_HH_MM) : "N/A"}
+                </>
+            )
         },
         {
             title: 'Actual Checked In Date Time',
             dataIndex: 'actualCheckedInTime',
+            render: (text) => (
+                <>
+                    {text != null ? moment(text).format(DATE_FORMAT_YYYY_MM_DD_HH_MM) : "N/A"}
+                </>
+            )
         },
         {
             title: 'Actual Checked Out Date Time',
             dataIndex: 'actualCheckedOutTime',
+            render: (text) => (
+                <>
+                    {text != null ? moment(text).format(DATE_FORMAT_YYYY_MM_DD_HH_MM) : "N/A"}
+                </>
+            )
         },
         {
             title: 'Created Date Time',
             dataIndex: 'createdDateTime',
+            render: (text) => (
+                <>
+                    {text != null ? moment(text).format(DATE_FORMAT_YYYY_MM_DD_HH_MM) : "N/A"}
+                </>
+            )
         },
         {
             title: 'Total Amount',
@@ -67,7 +97,7 @@ function ManageReservationComp(props) {
                                 Completed
                             </Tag> :
                             text === "CHECKED_IN" ?
-                                <Tag color='#0a345a'>
+                                <Tag color='#06645a'>
                                     Checked In
                                 </Tag> :
                                 text === "CHECKED_OUT" ?
@@ -78,19 +108,23 @@ function ManageReservationComp(props) {
                                         <Tag color='#092e58'>
                                             Open
                                         </Tag> :
-                                    <>
-                                        <Tag color='#5c2c05'>
-                                            Canceled
-                                        </Tag>
-                                        <Tooltip title="Canceled Reason">
-                                            <Button className={"table-icon-color"} size={"small"}
-                                                    style={{color: '#e7482d', backgroundColor: '#070814f5'}}
-                                            >
-                                                <MessageOutlined style={{backgroundColor: '#11121d'}}/>
-                                            </Button>
+                                        text === "PENDING" ?
+                                            <Tag color='#d04dff'>
+                                                PENDING
+                                            </Tag> :
+                                            <>
+                                                <Tag color='#5c2c05'>
+                                                    Canceled
+                                                </Tag>
+                                                <Tooltip title="Canceled Reason">
+                                                    <Button className={"table-icon-color"} size={"small"}
+                                                            style={{color: '#e7482d', backgroundColor: '#070814f5'}}
+                                                    >
+                                                        <MessageOutlined style={{backgroundColor: '#11121d'}}/>
+                                                    </Button>
 
-                                        </Tooltip>
-                                    </>
+                                                </Tooltip>
+                                            </>
 
                     }
 
@@ -102,11 +136,11 @@ function ManageReservationComp(props) {
             title: 'Action',
             key: 'action',
             align: 'center',
-
+            fixed: 'right',
             render: (text, rec) => (
                 <Space size="middle">
                     <Tooltip title="View" style={{backgroundColor: '#000000fa'}}>
-                        <Button className={"table-icon-color"} onClick={() => setModalVisible(true)}
+                        <Button className={"table-icon-color"} onClick={() => setModalVisible(rec.reservationId)}
                                 style={{color: '#faad14', backgroundColor: '#070814f5'}}
 
 
@@ -116,10 +150,13 @@ function ManageReservationComp(props) {
             )
         }
     ]
-    const setModalVisible = (val) => {
-        setReDetailModalVisible(true)
+    const setModalVisible = (resId) => {
+        setReDetailModalVisible({isModalVisible: true, selectedRecReservationId: resId})
     }
 
+    useEffect(() => {
+        searchReservations({})
+    }, [])
     const searchReservations = (values) => {
         setLoading(true)
         values.page = 1
@@ -143,7 +180,7 @@ function ManageReservationComp(props) {
         <>
             <LoadingComp loading={isLoading}/>
             {
-                isReDetailModalVisible ?
+                isModalVisible ?
                     <Modal className="modal-custom-bg"
                            title="Reservation Details"
                            style={{
@@ -153,13 +190,15 @@ function ManageReservationComp(props) {
                            }}
                            centered
                            maskClosable={false}
-                           visible={isReDetailModalVisible}
-                           onCancel={() => setReDetailModalVisible(false)}
+                           visible={isModalVisible}
+                           onCancel={() =>
+                               setReDetailModalVisible(
+                                   {isModalVisible: false, selectedRecReservationId: ""})}
                            destroyOnClose={true}
                            footer={null}
                            width={1000}>
 
-                        <EnterBookingDetailComp/>
+                        <ReservationDataComp reservationId={selectedRecReservationId}/>
 
                     </Modal>
 
@@ -268,7 +307,8 @@ function ManageReservationComp(props) {
                                     }}
                                 >
 
-                                    <Option key={""}>Select Status</Option>
+                                    <Option key={""}>All</Option>
+                                    <Option key={"PENDING"}>Pending</Option>
                                     <Option key={"OPEN"}>Open</Option>
                                     <Option key={"CHECKED_IN"}>Checked In</Option>
                                     <Option key={"CHECKED_OUT"}>Checked Out</Option>
@@ -289,7 +329,7 @@ function ManageReservationComp(props) {
                                         backgroundColor: 'transparent',
                                         borderColor: 'rgba(255,255,255,0.37)',
                                         width: '100%'
-                                    }}><ReloadOutlined/>Reset</Button>
+                                    }} htmlType={"reset"} onClick={()=>searchReservations({})}><ReloadOutlined/>Reset</Button>
                                 </Form.Item>
                                 <Form.Item>
                                     <Button type="primary" htmlType={"submit"}><SearchOutlined/>Search</Button>

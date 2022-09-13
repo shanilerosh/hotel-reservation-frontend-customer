@@ -2,7 +2,7 @@ import HttpService from "../util/HttpService";
 import axios from "axios";
 import {BASE_URL} from "../util/Constants";
 
-const basUrl = BASE_URL+"/";
+const basUrl = BASE_URL + "/";
 const _axios = axios.create();
 
 class ReservationService {
@@ -18,8 +18,11 @@ class ReservationService {
     makeReservationCustomer = (data) => {
         return HttpService.post("/reservation/", data)
     }
-    fetchReservations = (filterData,status) => {
-        return HttpService.post("/reservation/clark/"+status, filterData)
+    fetchReservations = (filterData, status) => {
+        return HttpService.post("/reservation/clark/" + status, filterData)
+    }
+    fetchReservationByReservationId = (resId) => {
+        return HttpService.get("/reservation/" + resId)
     }
 
 }

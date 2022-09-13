@@ -5,7 +5,7 @@ import reservationService from "../../../Service/ReservationService";
 import moment from "moment";
 import {UtilitiService} from "../../../util/UtilitiService";
 import LoadingComp from "../../../components/loadingComp/LoadingComp";
-import {ROLE_CUSTOMER} from "../../../util/Constants";
+import {DATE_FORMAT_YYYY_MM_DD, ROLE_CUSTOMER} from "../../../util/Constants";
 import customerService from "../../../Service/CustomerService";
 
 function EnterBookingDetailComp(props) {
@@ -43,7 +43,7 @@ function EnterBookingDetailComp(props) {
             reservationStatus: "OPEN",
             isCreditCardApplicable: isProceedWithCreditCard,
             creditCardNumber: values.creditCardNumber,
-            expirationDate: isProceedWithCreditCard ? moment(values.expirationDate).format("YYYY-MM-DD") : "",
+            expirationDate: isProceedWithCreditCard ? moment(values.expirationDate).format(DATE_FORMAT_YYYY_MM_DD) : "",
             cardCsv: values.cardCsv,
             customerDto: customerDto,
             username: UtilitiService.getUserName(),
@@ -128,7 +128,6 @@ function EnterBookingDetailComp(props) {
     }
     const fetchCustomerDetailByNic = () => {
         customerService.getCustDetailByNic(resForm.getFieldValue("nicPass")).then((res) => {
-            console.log('customer', res);
             resForm.setFieldsValue({
                 customerName: res.data.customerName,
                 country: res.data.country,

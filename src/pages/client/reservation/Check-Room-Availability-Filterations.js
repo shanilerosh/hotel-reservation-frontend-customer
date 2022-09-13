@@ -4,7 +4,7 @@ import Logo from "../../../assets/images/hotelLogo5.png";
 import {SearchOutlined} from "@ant-design/icons";
 import axios from "axios";
 import reservationService from "../../../Service/ReservationService";
-import {BASE_URL} from "../../../util/Constants";
+import {BASE_URL, DATE_FORMAT_YYYY_MM_DD_HH_MM} from "../../../util/Constants";
 import moment from "moment";
 
 const {Option} = Select;
@@ -60,7 +60,7 @@ function CheckRoomsAvailabilityFilteration(props) {
                         <Form.Item name={"arrivalTime"}
                             rules={[{required: true, message: 'This field is required.'}]}
                         >
-                            <DatePicker showTime format={"YYYY-MM-DD HH:mm"} placeholder={"Check In Date Time"}
+                            <DatePicker showTime format={DATE_FORMAT_YYYY_MM_DD_HH_MM} placeholder={"Check In Date Time"}
                                         disabledDate={d => d.isBefore(moment())}
                                         style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                         onChange={setCheckInDateTimeValue}
@@ -72,7 +72,7 @@ function CheckRoomsAvailabilityFilteration(props) {
                         <Form.Item name={"departureDateTime"}
                             rules={[{required: true, message: 'This field is required.'}]}
                         >
-                            <DatePicker format={"YYYY-MM-DD HH:mm"} showTime placeholder={"Check Out Date Time"}
+                            <DatePicker format={DATE_FORMAT_YYYY_MM_DD_HH_MM} showTime placeholder={"Check Out Date Time"}
                                         disabledDate={d => d.isBefore(moment()) || d.isSameOrBefore(checkInDateTime)}
                                         style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                             />
