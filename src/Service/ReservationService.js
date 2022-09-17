@@ -24,7 +24,18 @@ class ReservationService {
     fetchReservationByReservationId = (resId) => {
         return HttpService.get("/reservation/" + resId)
     }
-
+    markCheckIn = (resModifyData) => {
+        return HttpService.post("/reservation/check-in" , resModifyData)
+    }
+    markCheckOut = (resModifyData) => {
+        return HttpService.post("/reservation/check-out" , resModifyData)
+    }
+    markCancel = (cencelationDto) => {
+        return HttpService.post("/reservation/cancel" , cencelationDto)
+    }
+    updateCardDetails = (reservationId,cardDto) => {
+        return HttpService.post("/reservation/credit-card/"+reservationId , cardDto)
+    }
 }
 
 const reservationService = new ReservationService()

@@ -1,16 +1,22 @@
-import {Button, Card, Checkbox, Col, DatePicker, Divider, Form, Input, message, Row, Space, Table} from "antd";
+import {Button, Card, Checkbox, Col, DatePicker, Divider, Form, Input, message, Modal, Row, Space, Table} from "antd";
 import React, {useEffect, useState} from 'react';
-import {BackwardOutlined, FileSearchOutlined, SearchOutlined} from "@ant-design/icons";
+import {
+    CheckCircleOutlined,
+    CloseCircleOutlined,
+    ExclamationCircleOutlined,
+    MacCommandOutlined,
+    MoneyCollectOutlined
+} from "@ant-design/icons";
 import reservationService from "../../../Service/ReservationService";
 import moment from "moment";
-import {UtilitiService} from "../../../util/UtilitiService";
 import LoadingComp from "../../../components/loadingComp/LoadingComp";
-import {DATE_FORMAT_YYYY_MM_DD, DATE_FORMAT_YYYY_MM_DD_HH_MM, ROLE_CUSTOMER} from "../../../util/Constants";
-import customerService from "../../../Service/CustomerService";
+import {DATE_FORMAT_YYYY_MM_DD, DATE_FORMAT_YYYY_MM_DD_HH_MM} from "../../../util/Constants";
+
 
 function ReservationDataComp(props) {
 
     const [isProceedWithCreditCard, setProceedWithCreditCard] = useState(false);
+    const [defaultCreditCardApplicableTypeFromDb, setDefaultCreditCardApplicableTypeFromDb] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [roomData, setRoomData] = useState([]);
     const [totalRoomPrice, setTotalRoomPrice] = useState(0);
@@ -20,11 +26,6 @@ function ReservationDataComp(props) {
     useEffect(() => {
         fetchCustomerDetailByNic(props.reservationId)
     }, [])
-    const onFinish = (values) => {
-
-
-    }
-
 
     const selectedRoomsColumns = [
         {
@@ -64,6 +65,7 @@ function ReservationDataComp(props) {
             setReservationStatus(res.data.reservationStatus)
             setTotalRoomPrice(res.data.totalAmount)
             setProceedWithCreditCard(res.data.isCreditCardApplicable)
+            setDefaultCreditCardApplicableTypeFromDb(res.data.isCreditCardApplicable)
             resForm.setFieldsValue({
                 actualCheckedInTime: getActualCheckedInDateTime(res.data.actualCheckedInTime),
                 actualCheckedOutTime: getActualCheckedOutDateTime(res.data.actualCheckedOutTime),
@@ -71,7 +73,7 @@ function ReservationDataComp(props) {
                 promisedCheckedInTime: moment(res.data.promisedCheckedInTime).format(DATE_FORMAT_YYYY_MM_DD_HH_MM),
                 reservationId: res.data.reservationId,
                 creditCardNumber: res.data.creditCardNumber,
-                expirationDate: moment(res.data.expirationDate).format(DATE_FORMAT_YYYY_MM_DD),
+                expirationDate: res.data.expirationDate,
                 cardCsv: res.data.cardCsv,
                 email: res.data.customerDto.email,
                 custId: res.data.customerDto.custId,
@@ -99,13 +101,106 @@ function ReservationDataComp(props) {
         return val != null ? moment(val).format(DATE_FORMAT_YYYY_MM_DD_HH_MM) :
             reservationStatus === "OPEN" ? moment() : ""
     }
+    const reloadReservationDetails = () => {
+        props.reloadResTable()
+    }
+    const updateReservationStatus = (values) => {
+        Modal.confirm({
+            title: 'Confirm',
+            icon: <ExclamationCircleOutlined/>,
+            content: fetchConfirmationContent(reservationStatus),
+            okText: 'Yes',
+            cancelText: 'No',
+            onOk() {
+                if (reservationStatus === "OPEN") {
+                    markAsCheckedIn(values)
+                } else if (reservationStatus === "CHECKED_IN") {
+                    markAsCheckedOut(values);
+                } else if (reservationStatus === "PENDING") {
+                    updateCardDetails(values);
+                }
+            }
+        });
+
+    }
+    const fetchConfirmationContent = (reservationStatus) => {
+        return "Are you sure you want to ".concat(
+            reservationStatus === "OPEN" ? "mark as Checked In?" :
+                reservationStatus === "CHECKED_IN" ? "mark as Checked Out & Update the payment details?" :
+                    "Update card details?"
+        );
+    }
+
+    const markAsCheckedOut = (values) => {
+        const modifiedDto = {
+            applDateTime: values.actualCheckedOutTime,
+            resevationId: values.reservationId
+        }
+        reservationService.markCheckOut(modifiedDto).then((res) => {
+            message.success("Successfully Marked as Checked Out")
+            reloadReservationDetails();
+        }).catch((error) => {
+            message.error(error.response?.data.message)
+        })
+    }
+    const markAsCheckedIn = (values) => {
+        const modifiedDto = {
+            applDateTime: values.actualCheckedInTime,
+            resevationId: values.reservationId
+        }
+        reservationService.markCheckIn(modifiedDto).then((res) => {
+            message.success("Successfully Marked as Checked In");
+            reloadReservationDetails();
+        }).catch((error) => {
+            message.error(error.response.data.message)
+        })
+    }
+    const updateCardDetails = (values) => {
+
+        const cardDto = {
+            cardCsv: values.cardCsv,
+            expirationDate: values.expirationDate,
+            creditCardNumber: values.creditCardNumber,
+        }
+        reservationService.updateCardDetails(values.reservationId, cardDto).then((res) => {
+            message.success("Card details successfully updated")
+            reloadReservationDetails();
+        }).catch((error) => {
+            message.error(error.response.data.message)
+        })
+    }
+    const cancelReservation = () => {
+        Modal.confirm({
+            title: 'Confirm',
+            icon: <ExclamationCircleOutlined/>,
+            content: "Are you sure you want to cancel the reservation?",
+            okText: 'Yes',
+            cancelText: 'No',
+            onOk() {
+                const canceleationDto = {
+                    resevationId: resForm.getFieldValue("reservationId"),
+                    cancellationReason: 'testtttt'
+                }
+                reservationService.markCancel(canceleationDto).then((res) => {
+                    message.success("Successfully Marked as Cancelled")
+                    reloadReservationDetails()
+                }).catch((error) => {
+                    message.error(error.response.data.message)
+                })
+            }
+
+        });
+
+    }
     return (
         <>
             <LoadingComp loading={isLoading}/>
             <Card
                 style={{width: '100%', marginTop: 50, background: 'rgba(0,0,0,0.42)', fontcolor: 'white'}}>
                 <Form layout="vertical"
-                      form={resForm}>
+                      form={resForm}
+                      onFinish={updateReservationStatus}
+                >
 
                     <Row gutter={16}>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
@@ -141,7 +236,9 @@ function ReservationDataComp(props) {
                             >
                                 {
                                     reservationStatus === "OPEN" ?
-                                        <DatePicker format={DATE_FORMAT_YYYY_MM_DD_HH_MM} showTime placeholder={"Please Select"}
+                                        <DatePicker format={DATE_FORMAT_YYYY_MM_DD_HH_MM} showTime
+                                                    placeholder={"Please Select"}
+                                                    disabledDate={d => d.isBefore(resForm.getFieldValue("promisedCheckedInTime"))}
                                                     style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                         /> :
                                         <Input disabled type={"text"} placeholder={"N/A"}
@@ -161,7 +258,9 @@ function ReservationDataComp(props) {
                             >
                                 {
                                     reservationStatus === "CHECKED_IN" ?
-                                        <DatePicker format={DATE_FORMAT_YYYY_MM_DD_HH_MM} showTime placeholder={"Please Select"}
+                                        <DatePicker format={DATE_FORMAT_YYYY_MM_DD_HH_MM} showTime
+                                                    placeholder={"Please Select"}
+                                                    disabledDate={d => d.isBefore(moment()) || d.isBefore(resForm.getFieldValue("actualCheckedInTime"))}
                                                     style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                         /> :
                                         <Input disabled type={"text"} placeholder={"N/A"}
@@ -266,7 +365,7 @@ function ReservationDataComp(props) {
                     <Divider style={{backgroundColor: 'rgba(75,73,73,0.23)'}}/>
                     <Row gutter={16}>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"isCreditCardApplicable"}>
+                            <Form.Item name={"isCreditCardApplicable"} onChange={(val) => setProceedWithCreditCard(val.target.checked)}>
                                 <Checkbox checked={isProceedWithCreditCard} disabled={reservationStatus !== "PENDING"}
                                           style={{color: 'white'}}>Proceed
                                     with credit card details</Checkbox>
@@ -290,10 +389,18 @@ function ReservationDataComp(props) {
                                 </Col>
                                 <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                                     <Form.Item name={"expirationDate"} label={"Expiration Date"}>
-                                        <Input disabled={reservationStatus !== "PENDING"} type={"text"}
-                                               placeholder={"Expiration Date"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                        />
+                                        {
+                                            defaultCreditCardApplicableTypeFromDb?
+                                                <Input disabled type={"text"}
+                                                       placeholder={"Expiration Date"}
+                                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                                />:
+
+                                                <DatePicker  type={"text"}
+                                                            style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
+                                                />
+                                        }
+
 
                                     </Form.Item>
                                 </Col>
@@ -308,16 +415,27 @@ function ReservationDataComp(props) {
                             </Row> : ''
                     }
                     <Space size={16} style={{float: 'right'}}>
+                        {reservationStatus === "OPEN" || reservationStatus === "PENDING" ?
+                            <Form.Item>
+                                <Button style={{
+                                    color: '#ffffff',
+                                    backgroundColor: 'transparent',
+                                    borderColor: '#ffffff',
+                                    width: '100%'
+                                }} onClick={() => cancelReservation()}><CloseCircleOutlined/>Cancel Reservation</Button>
+                            </Form.Item> : ''
+                        }
+
                         <Form.Item>
                             <Button type="primary" htmlType={"submit"}>
                                 {reservationStatus === "OPEN" ?
-                                    "Mark As Checked In" :
+                                    <><CheckCircleOutlined/>Mark As Checked In </> :
                                     reservationStatus === "CHECKED_IN" ?
-                                        "Mark As Checked Out" :
+                                        <><MacCommandOutlined/>Mark As Checked Out</> :
                                         reservationStatus === "CHECKED_OUT" ?
-                                            "Make The Payment" :
+                                            <><MoneyCollectOutlined/>Make The Payment</> :
                                             reservationStatus === "PENDING" ?
-                                                "Update Card Details" :""
+                                                <><ExclamationCircleOutlined/>Update Card Details</> : ""
                                 }
                             </Button>
                         </Form.Item>

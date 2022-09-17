@@ -116,7 +116,7 @@ function ManageReservationComp(props) {
                                                 <Tag color='#5c2c05'>
                                                     Canceled
                                                 </Tag>
-                                                <Tooltip title="Canceled Reason">
+                                                <Tooltip title={rec.cancalationReason}>
                                                     <Button className={"table-icon-color"} size={"small"}
                                                             style={{color: '#e7482d', backgroundColor: '#070814f5'}}
                                                     >
@@ -160,7 +160,7 @@ function ManageReservationComp(props) {
     const searchReservations = (values) => {
         setLoading(true)
         values.page = 1
-        values.size = 100
+        values.size = 1000
         values.sortField = ""
         values.sortOrder = "ASC"
         reservationService.fetchReservations(values, values.status).then((res) => {
@@ -175,6 +175,15 @@ function ManageReservationComp(props) {
             }
 
         })
+    }
+    const reloadResTable = () => {
+        setReDetailModalVisible({isModalVisible: false, selectedRecReservationId: ""})
+        searchReservations({
+            page : 1,
+            size : 1000,
+            sortField : "",
+            sortOrder : "ASC",
+        });
     }
     return (
         <>
@@ -198,7 +207,8 @@ function ManageReservationComp(props) {
                            footer={null}
                            width={1000}>
 
-                        <ReservationDataComp reservationId={selectedRecReservationId}/>
+                        <ReservationDataComp reservationId={selectedRecReservationId}
+                                             reloadResTable={() => reloadResTable({})}/>
 
                     </Modal>
 
@@ -277,24 +287,24 @@ function ManageReservationComp(props) {
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                             <Form.Item name={"nicPass"} label={"NIC/Passport"}>
                                 <Input
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                       type="text"/>
+                                    style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                    type="text"/>
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                             <Form.Item name={"customerName"} label={"Customer Name"}>
                                 <Input
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                       type="text"/>
+                                    style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                    type="text"/>
 
                             </Form.Item>
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                             <Form.Item name={"customerCountry"} label={"Country"}>
                                 <Input
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                       type="text"/>
+                                    style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                    type="text"/>
 
                             </Form.Item>
                         </Col>
@@ -329,7 +339,7 @@ function ManageReservationComp(props) {
                                         backgroundColor: 'transparent',
                                         borderColor: 'rgba(255,255,255,0.37)',
                                         width: '100%'
-                                    }} htmlType={"reset"} onClick={()=>searchReservations({})}><ReloadOutlined/>Reset</Button>
+                                    }} htmlType={"reset"} onClick={() => searchReservations({})}><ReloadOutlined/>Reset</Button>
                                 </Form.Item>
                                 <Form.Item>
                                     <Button type="primary" htmlType={"submit"}><SearchOutlined/>Search</Button>
