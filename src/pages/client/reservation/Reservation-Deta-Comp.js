@@ -1,4 +1,19 @@
-import {Button, Card, Checkbox, Col, DatePicker, Divider, Form, Input, message, Modal, Row, Space, Table} from "antd";
+import {
+    Button,
+    Card,
+    Checkbox,
+    Col,
+    DatePicker,
+    Divider,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Modal, Radio,
+    Row,
+    Space,
+    Table
+} from "antd";
 import React, {useEffect, useState} from 'react';
 import {
     CheckCircleOutlined,
@@ -11,20 +26,35 @@ import reservationService from "../../../Service/ReservationService";
 import moment from "moment";
 import LoadingComp from "../../../components/loadingComp/LoadingComp";
 import {DATE_FORMAT_YYYY_MM_DD, DATE_FORMAT_YYYY_MM_DD_HH_MM} from "../../../util/Constants";
+import paymentService from "../../../Service/PaymentService";
+import CustomerDataSection from "./CustomerDataSection";
+import ReservationDateDataSection from "./ReservationDateDataSection";
+import AdditionalChargesSection from "./AdditionalChargesSection";
+import CardDataSection from "./CardDataSection";
+import {useHistory} from "react-router-dom";
 
 
 function ReservationDataComp(props) {
+    const history = useHistory();
 
     const [isProceedWithCreditCard, setProceedWithCreditCard] = useState(false);
     const [defaultCreditCardApplicableTypeFromDb, setDefaultCreditCardApplicableTypeFromDb] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [roomData, setRoomData] = useState([]);
+    const [totalPayable, setTotalPayableAmount] = useState(0);
+    const [{roomWiseChargesData, totalRoomBasicCharge}, setRoomWiseCharges] = useState({
+        roomWiseChargesData: [], totalRoomBasicCharge: 0
+    });
     const [totalRoomPrice, setTotalRoomPrice] = useState(0);
     const [reservationStatus, setReservationStatus] = useState("");
+    const [paymentMethod, setPaymentMethod] = useState("");
     const [resForm] = Form.useForm();
 
     useEffect(() => {
         fetchCustomerDetailByNic(props.reservationId)
+        if (props.isFromMakePayment) {
+            fetchCostDetails(props.reservationId)
+        }
     }, [])
 
     const selectedRoomsColumns = [
@@ -56,11 +86,50 @@ function ReservationDataComp(props) {
         },
     ]
 
+    const roomWiseCharges = [
 
+        {
+            title: 'Room Number',
+            dataIndex: 'roomNumber',
+            width: 60
+        },
+        {
+            title: 'No of Occupants',
+            dataIndex: 'numberOfOccupants',
+            width: 60
+        },
+        {
+            title: 'Days',
+            dataIndex: 'days',
+            width: 60
+        },
+        {
+            title: 'Amount',
+            dataIndex: 'rowWiseAmount',
+            align: 'right',
+            width: 60
+        },
+
+        {
+            title: 'Description',
+            dataIndex: 'description',
+            width: 60
+        },
+    ]
+
+    const fetchCostDetails = (reservationId) => {
+        paymentService.fetchCostDetails(reservationId).then((res) => {
+            setRoomWiseCharges({
+                roomWiseChargesData: res.data.roomWisePrices,
+                totalRoomBasicCharge: res.data.totalPayable
+            })
+        }).catch((error) => {
+            message.error(error.response.data.message)
+        })
+    }
     const fetchCustomerDetailByNic = (reservationId) => {
         setLoading(true)
         reservationService.fetchReservationByReservationId(reservationId).then((res) => {
-            console.log('response--', res.data);
             setRoomData(res.data.roomList)
             setReservationStatus(res.data.reservationStatus)
             setTotalRoomPrice(res.data.totalAmount)
@@ -118,6 +187,8 @@ function ReservationDataComp(props) {
                     markAsCheckedOut(values);
                 } else if (reservationStatus === "PENDING") {
                     updateCardDetails(values);
+                }else if(reservationStatus === "CHECKED_OUT" && !props.isFromMakePayment){
+                    history.push('/makePayment')
                 }
             }
         });
@@ -126,8 +197,12 @@ function ReservationDataComp(props) {
     const fetchConfirmationContent = (reservationStatus) => {
         return "Are you sure you want to ".concat(
             reservationStatus === "OPEN" ? "mark as Checked In?" :
-                reservationStatus === "CHECKED_IN" ? "mark as Checked Out & Update the payment details?" :
-                    "Update card details?"
+                reservationStatus === "CHECKED_IN" ? "mark as Checked Out?" :
+                    reservationStatus === "CHECKED_OUT" && !props.isFromMakePayment ? "proceed to payment?" :
+                    reservationStatus === "CHECKED_OUT" && props.isFromMakePayment ? "make the payment?" :
+                        "Update card details?"
+
+
         );
     }
 
@@ -192,6 +267,22 @@ function ReservationDataComp(props) {
         });
 
     }
+    const confirmPayment = () => {
+        alert(resForm.getFieldValue("laundryCharges"))
+        const totalPayable =
+            totalRoomBasicCharge +
+            parseInt(checkValueIsEmptyOrUndefined(resForm.getFieldValue("ketCharges"))) +
+            parseInt(checkValueIsEmptyOrUndefined(resForm.getFieldValue("laundryCharges"))) +
+            parseInt(checkValueIsEmptyOrUndefined(resForm.getFieldValue("barCharges"))) +
+            parseInt(checkValueIsEmptyOrUndefined(resForm.getFieldValue("telephoneCharges"))) +
+            parseInt(checkValueIsEmptyOrUndefined(resForm.getFieldValue("clubFacility")))
+
+
+        setTotalPayableAmount(totalPayable)
+    }
+    const checkValueIsEmptyOrUndefined = (value) => {
+        return value == null || value === undefined || value === "" ? 0 : value
+    }
     return (
         <>
             <LoadingComp loading={isLoading}/>
@@ -202,219 +293,166 @@ function ReservationDataComp(props) {
                       onFinish={updateReservationStatus}
                 >
 
-                    <Row gutter={16}>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"reservationId"} label={"Reservation ID"}>
-                                <Input type={"text"}
-                                       disabled style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                />
-                            </Form.Item>
-
-                        </Col>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"promisedCheckedInTime"} label={"Check In Date time"}>
-                                <Input disabled type={"text"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                />
-
-                            </Form.Item>
-                        </Col>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"promisedCheckedOutTime"} label={"Check Out Date Time"}>
-                                <Input disabled type={"text"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                />
-
-                            </Form.Item>
-                        </Col>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"actualCheckedInTime"} label={"Actual Checked In Date Time"}
-                                       rules={[{
-                                           required: reservationStatus === "OPEN" ? true : false,
-                                           message: 'This field is required.'
-                                       }]}
-                            >
-                                {
-                                    reservationStatus === "OPEN" ?
-                                        <DatePicker format={DATE_FORMAT_YYYY_MM_DD_HH_MM} showTime
-                                                    placeholder={"Please Select"}
-                                                    disabledDate={d => d.isBefore(resForm.getFieldValue("promisedCheckedInTime"))}
-                                                    style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
-                                        /> :
-                                        <Input disabled type={"text"} placeholder={"N/A"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                        />
-                                }
-
-
-                            </Form.Item>
-                        </Col>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"actualCheckedOutTime"} label={"Actual Checked Out Date Time"}
-                                       rules={[{
-                                           required: reservationStatus === "CHECKED_IN" ? true : false,
-                                           message: 'This field is required.'
-                                       }]}
-                            >
-                                {
-                                    reservationStatus === "CHECKED_IN" ?
-                                        <DatePicker format={DATE_FORMAT_YYYY_MM_DD_HH_MM} showTime
-                                                    placeholder={"Please Select"}
-                                                    disabledDate={d => d.isBefore(moment()) || d.isBefore(resForm.getFieldValue("actualCheckedInTime"))}
-                                                    style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
-                                        /> :
-                                        <Input disabled type={"text"} placeholder={"N/A"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                        />
-                                }
-
-                            </Form.Item>
-                        </Col>
-
-
-                    </Row>
+                    <ReservationDateDataSection reservationStatus={reservationStatus} resForm={resForm}/>
 
                     <Divider style={{backgroundColor: 'rgba(75,73,73,0.23)'}}/>
-                    <Row gutter={16}>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"nicPass"} label={"NIC/Passport"}>
-                                <Input disabled type={"text"} placeholder={"NIC/Passport"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                />
-                            </Form.Item>
 
-                        </Col>
+                    <CustomerDataSection/>
 
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"customerName"} label={"Customer Name"}>
-                                <Input disabled type={"text"} placeholder={"Customer Name"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"country"} label={"Country"}>
-                                <Input disabled type={"text"} placeholder={"Country"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"city"} label={"City"}>
-                                <Input disabled type={"text"} placeholder={"City"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"address"} label={"Address"}>
-                                <Input disabled type={"text"} placeholder={"Address"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"contactNumber"} label={"Contact Number"}>
-                                <Input disabled type={"text"} placeholder={"Contact Number"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"email"} label={"Email"}>
-                                <Input disabled type={"text"} placeholder={"Email"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item label={"Special Requirement"}>
-                                <Input disabled type={"text"} placeholder={"Special Requirement"}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                />
-                            </Form.Item>
-                        </Col>
-                    </Row>
                     <Divider style={{backgroundColor: 'rgba(75,73,73,0.23)'}}/>
                     <Card style={{
-                        width: '100%',
-                        marginTop: 15,
-                        background: 'rgba(45,44,44,0.23)',
-                        borderRadius: 0,
-                        color: 'white'
+                        width: '100%', marginTop: 15, background: 'rgba(45,44,44,0.23)',
+                        borderRadius: 0, color: 'white'
                     }}>
-                        <Row>
-                            <Col span={24}>
-                                <Table columns={selectedRoomsColumns}
-                                       size={"small"}
-                                       dataSource={roomData}
-                                       pagination={false}
-                                />
-                            </Col>
-                        </Row>
-                        <Row style={{marginTop: 10}}>
-                            <Col span={12}>
-                                <p align={'right'}>Total Room Cost</p>
-                            </Col>
-                            <Col span={12}>
-                                <p align={'right'}>Rs : {totalRoomPrice}</p>
-                            </Col>
-                        </Row>
+
+                        {
+                            props.isFromMakePayment ?
+                                <>
+                                    <Row>
+                                        <Col span={24}>
+                                            <Table columns={roomWiseCharges}
+                                                   size={"small"}
+                                                   dataSource={roomWiseChargesData}
+                                                   pagination={false}
+                                            />
+                                        </Col>
+                                    </Row>
+
+                                    <AdditionalChargesSection/>
+
+                                    <Space size={16} style={{float: 'right'}}>
+
+                                        <Button style={{
+                                            color: '#ffffff',
+                                            backgroundColor: 'transparent',
+                                            borderColor: '#ffffff',
+                                            width: '100%'
+                                        }} onClick={() => confirmPayment()}>Confirm</Button>
+
+
+                                    </Space>
+
+
+                                </> :
+                                <>
+                                    <Row>
+                                        <Col span={24}>
+                                            <Table columns={selectedRoomsColumns}
+                                                   size={"small"}
+                                                   dataSource={roomData}
+                                                   pagination={false}
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <Row style={{marginTop: 10}}>
+                                        <Col span={12}>
+                                            <p align={'right'}>Total Room Cost</p>
+                                        </Col>
+                                        <Col span={12}>
+                                            <p align={'right'}>Rs : {totalRoomPrice}</p>
+                                        </Col>
+                                    </Row>
+                                </>
+                        }
                     </Card>
 
+
+                    {
+                        props.isFromMakePayment ?
+                            <Row style={{marginTop: 10}}>
+                                <Col span={12}>
+                                    <p style={{fontSize: 20, color: 'white'}} align={'right'}>Total Payable Amount</p>
+                                </Col>
+                                <Col style={{
+                                    fontSize: 20,
+                                    color: 'white'
+                                }} span={12}>
+                                    <p align={'right'}>
+                                        <InputNumber disabled value={totalPayable}
+                                                     formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                                     parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                                                     style={{
+                                                         background: 'rgba(0,0,0,0)',
+                                                         color: 'white',
+                                                         width: '30%',
+                                                         alignItems: "right"
+                                                     }}
+                                        />
+                                    </p>
+                                </Col>
+                            </Row> : ''
+                    }
+
                     <Divider style={{backgroundColor: 'rgba(75,73,73,0.23)'}}/>
+
                     <Row gutter={16}>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"isCreditCardApplicable"} onChange={(val) => setProceedWithCreditCard(val.target.checked)}>
-                                <Checkbox checked={isProceedWithCreditCard} disabled={reservationStatus !== "PENDING"}
-                                          style={{color: 'white'}}>Proceed
-                                    with credit card details</Checkbox>
+                            <Form.Item name={"isCreditCardApplicable"}
+                                       onChange={(val) => setProceedWithCreditCard(val.target.checked)}>
+                                <Checkbox checked={isProceedWithCreditCard}
+                                          disabled={reservationStatus !== "PENDING"}
+                                          style={{color: 'white'}}>
+                                    {defaultCreditCardApplicableTypeFromDb ?
+                                        "Card details added" : "Proceed with card details"}</Checkbox>
                             </Form.Item>
-
-
                         </Col>
                     </Row>
 
                     {
-                        isProceedWithCreditCard ?
-                            <Row gutter={16} style={{marginTop: 25}}>
-                                <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                                    <Form.Item name={"creditCardNumber"} label={"Credit card number"}>
-                                        <Input disabled={reservationStatus !== "PENDING"} type={"text"}
-                                               placeholder={"Credit card number"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                        />
+                        props.isFromMakePayment ?
+                            <>
+                                <Divider style={{backgroundColor: 'rgba(75,73,73,0.23)'}}/>
+                                <Row gutter={16}>
+                                    <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                        <Radio.Group
+                                            options={[{label: 'Cash', value: 'cash'}, {label: 'Card', value: 'card'}]}
+                                            buttonStyle="solid"
+                                            onChange={(e) => setPaymentMethod(e.target.value)}
+                                            optionType="button"/>
 
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                                    <Form.Item name={"expirationDate"} label={"Expiration Date"}>
-                                        {
-                                            defaultCreditCardApplicableTypeFromDb?
-                                                <Input disabled type={"text"}
-                                                       placeholder={"Expiration Date"}
-                                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                                />:
+                                    </Col>
 
-                                                <DatePicker  type={"text"}
-                                                            style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
-                                                />
-                                        }
+                                </Row>
 
+                                {
+                                    paymentMethod === "card" ?
+                                        <CardDataSection reservationStatus={reservationStatus}
+                                                         defaultCreditCardApplicableTypeFromDb={defaultCreditCardApplicableTypeFromDb}/>
+                                        :
+                                        <Row gutter={16} style={{marginTop: 25}}>
+                                            <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                                <Form.Item>
+                                                    <Input type={"text"} placeholder={"Given Amount"}
+                                                           style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                                    />
 
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                                    <Form.Item name={"cardCsv"} label={"CSV"}>
-                                        <Input disabled={reservationStatus !== "PENDING"} placeholder={"CSV"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               type="text"/>
+                                                </Form.Item>
+                                            </Col>
+                                            <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                                <Form.Item>
+                                                    <Input type={"text"} placeholder={"Balance"}
+                                                           style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                                    />
 
-                                    </Form.Item>
-                                </Col>
-                            </Row> : ''
+                                                </Form.Item>
+                                            </Col>
+                                        </Row>
+
+                                }
+                            </> :
+
+                            <>
+                                {
+                                    isProceedWithCreditCard ?
+                                        <CardDataSection reservationStatus={reservationStatus}
+                                                         defaultCreditCardApplicableTypeFromDb={defaultCreditCardApplicableTypeFromDb}/> : ''
+                                }
+                            </>
                     }
+
+
                     <Space size={16} style={{float: 'right'}}>
+
                         {reservationStatus === "OPEN" || reservationStatus === "PENDING" ?
                             <Form.Item>
                                 <Button style={{
@@ -432,10 +470,12 @@ function ReservationDataComp(props) {
                                     <><CheckCircleOutlined/>Mark As Checked In </> :
                                     reservationStatus === "CHECKED_IN" ?
                                         <><MacCommandOutlined/>Mark As Checked Out</> :
-                                        reservationStatus === "CHECKED_OUT" ?
-                                            <><MoneyCollectOutlined/>Make The Payment</> :
-                                            reservationStatus === "PENDING" ?
-                                                <><ExclamationCircleOutlined/>Update Card Details</> : ""
+                                        reservationStatus === "CHECKED_OUT" && !props.isFromMakePayment ?
+                                            <><MoneyCollectOutlined/>Proceed to Payment</> :
+                                            reservationStatus === "CHECKED_OUT" && props.isFromMakePayment ?
+                                                <><MoneyCollectOutlined/>Make The Payment</> :
+                                                reservationStatus === "PENDING" ?
+                                                    <><ExclamationCircleOutlined/>Update Card Details</> : ""
                                 }
                             </Button>
                         </Form.Item>
@@ -444,8 +484,7 @@ function ReservationDataComp(props) {
             </Card>
 
         </>
-    )
-        ;
+    );
 }
 
 export default ReservationDataComp;

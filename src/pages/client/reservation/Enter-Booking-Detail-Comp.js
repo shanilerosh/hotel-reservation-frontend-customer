@@ -1,6 +1,6 @@
-import {Button, Card, Checkbox, Col, DatePicker, Divider, Form, Input, message, Row, Space, Table} from "antd";
+import {Button, Card, Checkbox, Col, DatePicker, Divider, Form, Input, message, Modal, Row, Space, Table} from "antd";
 import React, {useEffect, useState} from 'react';
-import {BackwardOutlined, FileSearchOutlined, SearchOutlined} from "@ant-design/icons";
+import {BackwardOutlined, ExclamationCircleOutlined, FileSearchOutlined, SearchOutlined} from "@ant-design/icons";
 import reservationService from "../../../Service/ReservationService";
 import moment from "moment";
 import {UtilitiService} from "../../../util/UtilitiService";
@@ -25,36 +25,46 @@ function EnterBookingDetailComp(props) {
     })
     const onFinish = (values) => {
         setLoading(true)
-        let customerDto = {
-            custId: values.custId,
-            nicPass: values.nicPass,
-            customerName: values.customerName,
-            country: values.country,
-            city: values.city,
-            address: values.address,
-            contactNumber: values.contactNumber,
-            username: "",
-            password: "",
-            email: values.email,
-        }
-        let reservationSubmitData = {
-            roomList: props.selectedRooms,
-            totalAmount: totalRoomPrice,
-            reservationStatus: "OPEN",
-            isCreditCardApplicable: isProceedWithCreditCard,
-            creditCardNumber: values.creditCardNumber,
-            expirationDate: isProceedWithCreditCard ? moment(values.expirationDate).format(DATE_FORMAT_YYYY_MM_DD) : "",
-            cardCsv: values.cardCsv,
-            customerDto: customerDto,
-            username: UtilitiService.getUserName(),
-            promisedCheckedInTime: values.arrivalTime,
-            promisedCheckedOutTime: values.departureDateTime
-        }
-        if (UtilitiService.getRole() === ROLE_CUSTOMER) {
-            makeReservationAsCustomer(reservationSubmitData)
-        } else {
-            makeReservationAsClark(reservationSubmitData)
-        }
+        Modal.confirm({
+            title: 'Confirm',
+            icon: <ExclamationCircleOutlined/>,
+            content: isProceedWithCreditCard ? "Are you sure you want to submit?" : "Are you sure you want to submit without card details?",
+            okText: 'Yes',
+            cancelText: 'No',
+            onOk() {
+                let customerDto = {
+                    custId: values.custId,
+                    nicPass: values.nicPass,
+                    customerName: values.customerName,
+                    country: values.country,
+                    city: values.city,
+                    address: values.address,
+                    contactNumber: values.contactNumber,
+                    username: "",
+                    password: "",
+                    email: values.email,
+                }
+                let reservationSubmitData = {
+                    roomList: props.selectedRooms,
+                    totalAmount: totalRoomPrice,
+                    reservationStatus: "OPEN",
+                    isCreditCardApplicable: isProceedWithCreditCard,
+                    creditCardNumber: values.creditCardNumber,
+                    expirationDate: isProceedWithCreditCard ? moment(values.expirationDate).format(DATE_FORMAT_YYYY_MM_DD) : "",
+                    cardCsv: values.cardCsv,
+                    customerDto: customerDto,
+                    username: UtilitiService.getUserName(),
+                    promisedCheckedInTime: values.arrivalTime,
+                    promisedCheckedOutTime: values.departureDateTime
+                }
+                if (UtilitiService.getRole() === ROLE_CUSTOMER) {
+                    makeReservationAsCustomer(reservationSubmitData)
+                } else {
+                    makeReservationAsClark(reservationSubmitData)
+                }
+
+            }
+        });
 
 
     }
@@ -63,6 +73,7 @@ function EnterBookingDetailComp(props) {
         reservationService.makeReservationClark(reservationData).then((res) => {
             message.success("Reservation created successfully")
             setLoading(false)
+            Location.reload()
         }).catch((error) => {
             console.log(error);
             setLoading(false)
@@ -77,6 +88,8 @@ function EnterBookingDetailComp(props) {
     const makeReservationAsCustomer = (reservationData) => {
         reservationService.makeReservationCustomer(reservationData).then((res) => {
             message.success("Reservation created successfully")
+            Location.reload()
+
             setLoading(false)
         }).catch((error) => {
             console.log(error);
@@ -145,8 +158,8 @@ function EnterBookingDetailComp(props) {
         })
 
     }
-    const disableFields=()=>{
-        if(props.isFrom==="CREATE_RES"){
+    const disableFields = () => {
+        if (props.isFrom === "CREATE_RES") {
             return true;
         }
         return false;
@@ -344,7 +357,7 @@ function EnterBookingDetailComp(props) {
                                     <Form.Item name={"expirationDate"} label={"Expire Date"}
                                                rules={[{required: true, message: 'This field is required.'}]}>
                                         <DatePicker
-                                                    style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
+                                            style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
                                         />
 
                                     </Form.Item>
@@ -353,8 +366,8 @@ function EnterBookingDetailComp(props) {
                                     <Form.Item name={"cardCsv"} label={"CSV"}
                                                rules={[{required: true, message: 'This field is required.'}]}>
                                         <Input
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                               type="text"/>
+                                            style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                            type="text"/>
 
                                     </Form.Item>
                                 </Col>

@@ -163,6 +163,7 @@ function ManageReservationComp(props) {
         values.size = 1000
         values.sortField = ""
         values.sortOrder = "ASC"
+        values.status=props.isFromMakePayment?"CHECKED_OUT":values.status
         reservationService.fetchReservations(values, values.status).then((res) => {
             setReservationData(res.data.data)
             setLoading(false)
@@ -179,10 +180,10 @@ function ManageReservationComp(props) {
     const reloadResTable = () => {
         setReDetailModalVisible({isModalVisible: false, selectedRecReservationId: ""})
         searchReservations({
-            page : 1,
-            size : 1000,
-            sortField : "",
-            sortOrder : "ASC",
+            page: 1,
+            size: 1000,
+            sortField: "",
+            sortOrder: "ASC",
         });
     }
     return (
@@ -208,6 +209,7 @@ function ManageReservationComp(props) {
                            width={1000}>
 
                         <ReservationDataComp reservationId={selectedRecReservationId}
+                                             isFromMakePayment={props.isFromMakePayment}
                                              reloadResTable={() => reloadResTable({})}/>
 
                     </Modal>
@@ -220,38 +222,63 @@ function ManageReservationComp(props) {
                 style={{width: '100%', marginTop: 50, background: 'rgba(0,0,0,0.42)', fontcolor: 'white'}}>
                 <Form layout="vertical" onFinish={searchReservations}>
                     <Row gutter={16}>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"promisedCheckedInTimeFrom"} label={"Checked In Date Time From"}>
-                                <DatePicker showTime
-                                            style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
-                                />
+                        {
+                            !props.isFromMakePayment ?
+                                <>
+                                    <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                        <Form.Item name={"promisedCheckedInTimeFrom"}
+                                                   label={"Checked In Date Time From"}>
+                                            <DatePicker showTime
+                                                        style={{
+                                                            background: 'rgba(0,0,0,0)',
+                                                            color: 'white',
+                                                            width: '100%'
+                                                        }}
+                                            />
 
-                            </Form.Item>
-                        </Col>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"promisedCheckedInTimeTo"} label={"Checked In Date Time To"}>
-                                <DatePicker showTime
-                                            style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
-                                />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                        <Form.Item name={"promisedCheckedInTimeTo"} label={"Checked In Date Time To"}>
+                                            <DatePicker showTime
+                                                        style={{
+                                                            background: 'rgba(0,0,0,0)',
+                                                            color: 'white',
+                                                            width: '100%'
+                                                        }}
+                                            />
 
-                            </Form.Item>
-                        </Col>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"promisedCheckedOutTimeFrom"} label={"Checked Out Date Time From"}>
-                                <DatePicker showTime
-                                            style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
-                                />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                        <Form.Item name={"promisedCheckedOutTimeFrom"}
+                                                   label={"Checked Out Date Time From"}>
+                                            <DatePicker showTime
+                                                        style={{
+                                                            background: 'rgba(0,0,0,0)',
+                                                            color: 'white',
+                                                            width: '100%'
+                                                        }}
+                                            />
 
-                            </Form.Item>
-                        </Col>
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <Form.Item name={"promisedCheckedOutTimeTo"} label={"Checked Out Date Time To"}>
-                                <DatePicker showTime
-                                            style={{background: 'rgba(0,0,0,0)', color: 'white', width: '100%'}}
-                                />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                        <Form.Item name={"promisedCheckedOutTimeTo"} label={"Checked Out Date Time To"}>
+                                            <DatePicker showTime
+                                                        style={{
+                                                            background: 'rgba(0,0,0,0)',
+                                                            color: 'white',
+                                                            width: '100%'
+                                                        }}
+                                            />
 
-                            </Form.Item>
-                        </Col>
+                                        </Form.Item>
+                                    </Col>
+                                </> : ''
+                        }
+
+
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                             <Form.Item name={"actualCheckedInTimeFrom"} label={"Actual Checked In Date Time From"}>
                                 <DatePicker showTime
@@ -310,11 +337,11 @@ function ManageReservationComp(props) {
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                             <Form.Item name={"status"} label={"Reservation Status"}>
-                                <Select
-                                    defaultValue={""}
-                                    style={{
-                                        width: "100%",
-                                    }}
+                                <Select disabled={props.isFromMakePayment}
+                                        defaultValue={props.isFromMakePayment ? "CHECKED_OUT" : ""}
+                                        style={{
+                                            width: "100%",
+                                        }}
                                 >
 
                                     <Option key={""}>All</Option>
