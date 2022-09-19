@@ -1,4 +1,19 @@
-import {Button, Card, Checkbox, Col, DatePicker, Divider, Form, Input, message, Modal, Row, Space, Table} from "antd";
+import {
+    Button,
+    Card,
+    Checkbox,
+    Col,
+    DatePicker,
+    Divider,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Modal,
+    Row,
+    Space,
+    Table
+} from "antd";
 import React, {useEffect, useState} from 'react';
 import {BackwardOutlined, ExclamationCircleOutlined, FileSearchOutlined, SearchOutlined} from "@ant-design/icons";
 import reservationService from "../../../Service/ReservationService";
@@ -77,11 +92,9 @@ function EnterBookingDetailComp(props) {
         }).catch((error) => {
             console.log(error);
             setLoading(false)
-            if (error.response.data.status === 500) {
-                message.error("System Error Occurred")
-            } else {
-                message.error(error.response.data.message)
-            }
+           
+            message.error(error.response.data.message)
+
 
         })
     }
@@ -94,11 +107,9 @@ function EnterBookingDetailComp(props) {
         }).catch((error) => {
             console.log(error);
             setLoading(false)
-            if (error.response.data.status === 500) {
-                message.error("System Error Occurred")
-            } else {
-                message.error(error.response.data.message)
-            }
+
+            message.error(error.response.data.message)
+
 
         })
     }
@@ -223,8 +234,8 @@ function EnterBookingDetailComp(props) {
                             <Form.Item name={"numberOfOccupants"} label={"No of Occupants"}
                                        rules={[{required: true, message: 'This field is required.'}]}
                             >
-                                <Input disabled={disableFields()}
-                                       style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                <InputNumber disabled={disableFields()}
+                                       style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
                                        type="text"/>
 
                             </Form.Item>

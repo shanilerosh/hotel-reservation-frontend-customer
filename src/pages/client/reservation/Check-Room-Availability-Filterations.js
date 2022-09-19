@@ -1,4 +1,4 @@
-import {Carousel, Col, Row, Menu, Form, Input, DatePicker, Button, Space, Select, message} from "antd";
+import {Carousel, Col, Row, Menu, Form, Input, DatePicker, Button, Space, Select, message, InputNumber} from "antd";
 import React, {useEffect, useState} from "react";
 import Logo from "../../../assets/images/hotelLogo5.png";
 import {SearchOutlined} from "@ant-design/icons";
@@ -105,8 +105,8 @@ function CheckRoomsAvailabilityFilteration(props) {
                         <Form.Item name={"numberOfOccupants"} label={"No of Occupants"}
                             rules={[{required: true, message: 'This field is required.'}]}
                         >
-                            <Input
-                                   style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                            <InputNumber
+                                   style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
                                    type="text"/>
 
                         </Form.Item>

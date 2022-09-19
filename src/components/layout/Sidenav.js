@@ -19,14 +19,6 @@ function Sidenav({color}) {
             <Menu theme="light" mode="inline">
                 <Menu.Item key="1">
                     <NavLink to="/dashboard">
-                        {/*<span*/}
-                        {/*    className="icon"*/}
-                        {/*    style={{*/}
-                        {/*        background: page === "dashboard" ? color : "",*/}
-                        {/*    }}*/}
-                        {/*>*/}
-                        {/*  {dashboard}*/}
-                        {/*</span>*/}
                         <span className="label">Dashboard</span>
                     </NavLink>
                 </Menu.Item>

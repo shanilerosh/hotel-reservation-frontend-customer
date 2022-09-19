@@ -12,15 +12,15 @@ import {
     Modal, Radio,
     Row,
     Space,
-    Table
+    Table, Tag
 } from "antd";
 import React, {useEffect, useState} from 'react';
 import {
     CheckCircleOutlined,
-    CloseCircleOutlined,
+    CloseCircleOutlined, DownloadOutlined,
     ExclamationCircleOutlined,
     MacCommandOutlined,
-    MoneyCollectOutlined
+    MoneyCollectOutlined, RightCircleFilled
 } from "@ant-design/icons";
 import reservationService from "../../../Service/ReservationService";
 import moment from "moment";
@@ -32,6 +32,7 @@ import ReservationDateDataSection from "./ReservationDateDataSection";
 import AdditionalChargesSection from "./AdditionalChargesSection";
 import CardDataSection from "./CardDataSection";
 import {useHistory} from "react-router-dom";
+import paidlogo from "../../../assets/images/paid-log.png";
 
 
 function ReservationDataComp(props) {
@@ -151,11 +152,13 @@ function ReservationDataComp(props) {
                 country: res.data.customerDto.country,
                 city: res.data.customerDto.city,
                 address: res.data.customerDto.address,
+                paymentDate: res.data.paymentDate,
+                paymentAmount: "Rs " + res.data.paymentAmount,
+                paymentType: res.data.paymentType==="CREDIT_CARD"?"Card Payment":"Cash Payment",
                 contactNumber: res.data.customerDto.contactNumber,
             })
             setLoading(false)
         }).catch((error) => {
-            console.log('error', error);
             setLoading(false)
             message.error(error.response.data.message)
 
@@ -187,8 +190,11 @@ function ReservationDataComp(props) {
                     markAsCheckedOut(values);
                 } else if (reservationStatus === "PENDING") {
                     updateCardDetails(values);
-                }else if(reservationStatus === "CHECKED_OUT" && !props.isFromMakePayment){
+                } else if (reservationStatus === "CHECKED_OUT" && !props.isFromMakePayment) {
                     history.push('/makePayment')
+                } else if (reservationStatus === "CHECKED_OUT" && props.isFromMakePayment) {
+                    makePayment(values)
+
                 }
             }
         });
@@ -199,10 +205,9 @@ function ReservationDataComp(props) {
             reservationStatus === "OPEN" ? "mark as Checked In?" :
                 reservationStatus === "CHECKED_IN" ? "mark as Checked Out?" :
                     reservationStatus === "CHECKED_OUT" && !props.isFromMakePayment ? "proceed to payment?" :
-                    reservationStatus === "CHECKED_OUT" && props.isFromMakePayment ? "make the payment?" :
-                        "Update card details?"
-
-
+                        reservationStatus === "CHECKED_OUT" && props.isFromMakePayment ? "make the payment?" :
+                            reservationStatus === "COMPLETED" ? "download the receipt?" :
+                                "Update card details?"
         );
     }
 
@@ -226,6 +231,24 @@ function ReservationDataComp(props) {
         reservationService.markCheckIn(modifiedDto).then((res) => {
             message.success("Successfully Marked as Checked In");
             reloadReservationDetails();
+        }).catch((error) => {
+            message.error(error.response.data.message)
+        })
+    }
+    const makePayment = () => {
+
+        const paypalDto = {
+            reservationId: resForm.getFieldValue("reservationId"),
+            currency: "USD",
+            method: "paypal",
+            total: totalPayable,
+            intent: "sale",
+            description: resForm.getFieldValue("customerName") + " payment as at " + moment(new Date()).format(DATE_FORMAT_YYYY_MM_DD_HH_MM)
+        }
+        paymentService.makeCardPayment(paypalDto).then((res) => {
+
+            window.location.replace(res.data)
+
         }).catch((error) => {
             message.error(error.response.data.message)
         })
@@ -449,7 +472,46 @@ function ReservationDataComp(props) {
                                 }
                             </>
                     }
+                    {
+                        reservationStatus === "COMPLETED" ?
+                            <Card style={{
+                                width: '100%', marginTop: 15, background: 'rgba(45,44,44,0.23)',
+                                borderRadius: 0, color: 'white',marginBottom:20
+                            }}>
+                               <u><h3 style={{color:"white"}}>Payment Details</h3></u>
+                            <Row gutter={16}>
+                                <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                    <Form.Item name={"paymentType"} label={"Payment Method"}>
+                                        <Tag color='#092e58'>
 
+                                            {resForm.getFieldValue("paymentType")}
+                                        </Tag>
+
+
+                                    </Form.Item>
+                                </Col>
+                                <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                    <Form.Item name={"paymentAmount"} label={"Full Paid Amount"}>
+                                        <Input disabled type={"text"}
+                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                        />
+
+                                    </Form.Item>
+                                </Col>
+                                <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                    <Form.Item name={"paymentDate"} label={"Payment Date"}>
+                                        <Input disabled type={"text"}
+                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                        />
+
+                                    </Form.Item>
+                                </Col>
+                                <Col xs={6} sm={6} md={6} lg={6} xl={6}>
+                                    <img src={paidlogo} style={{width: '76%', height: '87%',marginLeft:216}} alt="logo 1"/>
+                                </Col>
+                            </Row> </Card>: ''
+
+                    }
 
                     <Space size={16} style={{float: 'right'}}>
 
@@ -474,8 +536,10 @@ function ReservationDataComp(props) {
                                             <><MoneyCollectOutlined/>Proceed to Payment</> :
                                             reservationStatus === "CHECKED_OUT" && props.isFromMakePayment ?
                                                 <><MoneyCollectOutlined/>Make The Payment</> :
-                                                reservationStatus === "PENDING" ?
-                                                    <><ExclamationCircleOutlined/>Update Card Details</> : ""
+                                                reservationStatus === "COMPLETED" ?
+                                                    <><DownloadOutlined/>Download Receipt</> :
+                                                    reservationStatus === "PENDING" ?
+                                                        <><ExclamationCircleOutlined/>Update Card Details</> : ""
                                 }
                             </Button>
                         </Form.Item>
