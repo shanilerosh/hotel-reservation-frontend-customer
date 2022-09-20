@@ -8,6 +8,12 @@ class PaymentService {
     makeCardPayment = (paypalDto) => {
         return HttpService.post("/payment/paypal-pay",paypalDto);
     }
+    makeCashPayment = (paymentDto) => {
+        return HttpService.post("/payment/cash-pay",paymentDto);
+    }
+    downlaodInvoice = (reservationId) => {
+        return HttpService.get("/payment/payment-invoice/"+reservationId);
+    }
 
 }
 

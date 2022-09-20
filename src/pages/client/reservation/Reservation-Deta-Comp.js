@@ -14,7 +14,7 @@ import {
     Space,
     Table, Tag
 } from "antd";
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     CheckCircleOutlined,
     CloseCircleOutlined, DownloadOutlined,
@@ -50,7 +50,8 @@ function ReservationDataComp(props) {
     const [reservationStatus, setReservationStatus] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("");
     const [resForm] = Form.useForm();
-
+    const [templateUrl, setTemplateUrl] = useState("");
+    const btnDownloadCredit = useRef(null)
     useEffect(() => {
         fetchCustomerDetailByNic(props.reservationId)
         if (props.isFromMakePayment) {
@@ -152,9 +153,9 @@ function ReservationDataComp(props) {
                 country: res.data.customerDto.country,
                 city: res.data.customerDto.city,
                 address: res.data.customerDto.address,
-                paymentDate: res.data.paymentDate,
+                paymentDate: moment(res.data.paymentDate).format(DATE_FORMAT_YYYY_MM_DD_HH_MM),
                 paymentAmount: "Rs " + res.data.paymentAmount,
-                paymentType: res.data.paymentType==="CREDIT_CARD"?"Card Payment":"Cash Payment",
+                paymentType: res.data.paymentType === "CREDIT_CARD" ? "Card Payment" : "Cash Payment",
                 contactNumber: res.data.customerDto.contactNumber,
             })
             setLoading(false)
@@ -193,8 +194,13 @@ function ReservationDataComp(props) {
                 } else if (reservationStatus === "CHECKED_OUT" && !props.isFromMakePayment) {
                     history.push('/makePayment')
                 } else if (reservationStatus === "CHECKED_OUT" && props.isFromMakePayment) {
-                    makePayment(values)
-
+                    if (paymentMethod === "card") {
+                        makePaymentByCard(values)
+                    } else {
+                        makePaymentByCash()
+                    }
+                }else if(reservationStatus === "COMPLETED"){
+                    downloadInvoice();
                 }
             }
         });
@@ -235,7 +241,7 @@ function ReservationDataComp(props) {
             message.error(error.response.data.message)
         })
     }
-    const makePayment = () => {
+    const makePaymentByCard = () => {
 
         const paypalDto = {
             reservationId: resForm.getFieldValue("reservationId"),
@@ -243,7 +249,12 @@ function ReservationDataComp(props) {
             method: "paypal",
             total: totalPayable,
             intent: "sale",
-            description: resForm.getFieldValue("customerName") + " payment as at " + moment(new Date()).format(DATE_FORMAT_YYYY_MM_DD_HH_MM)
+            description: resForm.getFieldValue("customerName") + " payment as at " + moment(new Date()).format(DATE_FORMAT_YYYY_MM_DD_HH_MM),
+            laundryCharges:resForm.getFieldValue("laundryCharges"),
+            barCharges:resForm.getFieldValue("barCharges"),
+            telephoneCharges:resForm.getFieldValue("telephoneCharges"),
+            clubFacility:resForm.getFieldValue("clubFacility"),
+            ketCharges:resForm.getFieldValue("ketCharges"),
         }
         paymentService.makeCardPayment(paypalDto).then((res) => {
 
@@ -252,6 +263,37 @@ function ReservationDataComp(props) {
         }).catch((error) => {
             message.error(error.response.data.message)
         })
+    }
+    const makePaymentByCash = () => {
+
+        const paymentDto = {
+            reservationId: resForm.getFieldValue("reservationId"),
+            paymentAmount: totalPayable,
+            laundryCharges:resForm.getFieldValue("laundryCharges"),
+            barCharges:resForm.getFieldValue("barCharges"),
+            telephoneCharges:resForm.getFieldValue("telephoneCharges"),
+            clubFacility:resForm.getFieldValue("clubFacility"),
+            ketCharges:resForm.getFieldValue("ketCharges")
+        }
+        paymentService.makeCashPayment(paymentDto).then((res) => {
+            message.success("Cash Payment Done Successfully")
+            reloadReservationDetails();
+
+        }).catch((error) => {
+            message.error(error.response.data.message)
+        })
+    }
+    const downloadInvoice=()=>{
+        paymentService.downlaodInvoice(resForm.getFieldValue("reservationId")).then(res => {
+                setTemplateUrl("data:application/pdf;base64,".concat(res.data))
+
+            setTimeout(function () {
+                btnDownloadCredit.current.click()
+            }, 300)
+
+        }, (error) => {
+
+        });
     }
     const updateCardDetails = (values) => {
 
@@ -476,40 +518,41 @@ function ReservationDataComp(props) {
                         reservationStatus === "COMPLETED" ?
                             <Card style={{
                                 width: '100%', marginTop: 15, background: 'rgba(45,44,44,0.23)',
-                                borderRadius: 0, color: 'white',marginBottom:20
+                                borderRadius: 0, color: 'white', marginBottom: 20
                             }}>
-                               <u><h3 style={{color:"white"}}>Payment Details</h3></u>
-                            <Row gutter={16}>
-                                <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                                    <Form.Item name={"paymentType"} label={"Payment Method"}>
-                                        <Tag color='#092e58'>
+                                <u><h3 style={{color: "white"}}>Payment Details</h3></u>
+                                <Row gutter={16}>
+                                    <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                        <Form.Item name={"paymentType"} label={"Payment Method"}>
+                                            <Tag color='#092e58'>
 
-                                            {resForm.getFieldValue("paymentType")}
-                                        </Tag>
+                                                {resForm.getFieldValue("paymentType")}
+                                            </Tag>
 
 
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                                    <Form.Item name={"paymentAmount"} label={"Full Paid Amount"}>
-                                        <Input disabled type={"text"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                        />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                        <Form.Item name={"paymentAmount"} label={"Full Paid Amount"}>
+                                            <Input disabled type={"text"}
+                                                   style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                            />
 
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                                    <Form.Item name={"paymentDate"} label={"Payment Date"}>
-                                        <Input disabled type={"text"}
-                                               style={{background: 'rgba(0,0,0,0)', color: 'white'}}
-                                        />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                        <Form.Item name={"paymentDate"} label={"Payment Date"}>
+                                            <Input disabled type={"text"}
+                                                   style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                            />
 
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={6} sm={6} md={6} lg={6} xl={6}>
-                                    <img src={paidlogo} style={{width: '76%', height: '87%',marginLeft:216}} alt="logo 1"/>
-                                </Col>
-                            </Row> </Card>: ''
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={6} sm={6} md={6} lg={6} xl={6}>
+                                        <img src={paidlogo} style={{width: '76%', height: '87%', marginLeft: 216}}
+                                             alt="logo 1"/>
+                                    </Col>
+                                </Row> </Card> : ''
 
                     }
 
@@ -525,7 +568,8 @@ function ReservationDataComp(props) {
                                 }} onClick={() => cancelReservation()}><CloseCircleOutlined/>Cancel Reservation</Button>
                             </Form.Item> : ''
                         }
-
+                        <a ref={btnDownloadCredit} href={templateUrl}
+                           download={"Payment-Invoice-"+resForm.getFieldValue("reservationId")+"-"+moment(new Date()).format(DATE_FORMAT_YYYY_MM_DD_HH_MM)}></a>
                         <Form.Item>
                             <Button type="primary" htmlType={"submit"}>
                                 {reservationStatus === "OPEN" ?
