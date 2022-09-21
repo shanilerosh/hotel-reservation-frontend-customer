@@ -27,16 +27,13 @@ function CheckRoomAvailabilityComp(props) {
         values.size = 100
         values.sortField = ""
         values.sortOrder = "ASC"
-        // values.arrivalTime = moment(values.arrivalTime).format("YYYY-MM-DD HH:mm")
-        // values.departureDateTime = moment(values.departureDateTime).format("YYYY-MM-DD HH:mm")
         reservationService.filterAvailableRooms(values).then((res) => {
-            console.log(res)
             setLoadAvailableRooms({isLoadAvailableRooms: true, filteredRoomData: res.data.data})
             setIsLoading(false)
         }).catch(error => {
             console.log(error)
             setIsLoading(false)
-            message.error("System error occurred")
+            message.error(error.response.data.message)
         })
 
     }

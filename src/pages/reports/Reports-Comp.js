@@ -1,24 +1,195 @@
-import {Select, Button, Card, Col, Divider, Form, Input, Row, Space, Table, Tag, Tooltip, DatePicker} from "antd";
+import {
+    Select,
+    Button,
+    Card,
+    Col,
+    Divider,
+    Form,
+    Input,
+    Row,
+    Space,
+    Table,
+    Tag,
+    Tooltip,
+    DatePicker,
+    message
+} from "antd";
 import React, {useState} from 'react';
 import {EditOutlined, MessageOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
+import reportService from "../../Service/ReportService";
+import ReportDataComp from "./ReportDataComp";
+import LoadingComp from "../../components/loadingComp/LoadingComp";
+import {UtilitiService} from "../../util/UtilitiService";
+import {DATE_FORMAT_YYYY_MM_DD_HH_MM, ROLE_CUSTOMER} from "../../util/Constants";
+import reservationService from "../../Service/ReservationService";
+import moment from "moment";
 
 const {Option} = Select;
 
 function ReportsComp(props) {
     const [reportType, setReportType] = useState("")
+    const [{isShowCustomerReport, customerReportData}, setCustomerReportData] = useState(
+        {isShowCustomerReport: false, customerReportData: []})
+    const [{isShowReservationReport, reservationReportData}, setReservationReportData] = useState(
+        {isShowReservationReport: false, reservationReportData: []})
+    const [isLoading, setLoading] = useState(false);
+
     const handleReportTypeChange = (val) => {
+        setReservationReportData({isShowReservationReport: false, reservationReportData: []})
+        setCustomerReportData({isShowCustomerReport: false, customerReportData: []})
         setReportType(val)
     }
+    const generateReport = (values) => {
+        setLoading(true)
+        if (reportType === "CUSTOMER") {
+
+            const reportFilter = {
+                from: values.regDateFrom,
+                to: values.regDateTo,
+                reportType: reportType
+            }
+            reportService.generateCustomerReport(reportFilter).then((res) => {
+                console.log('customerData--', res);
+                setCustomerReportData({isShowCustomerReport: true, customerReportData: res.data.data})
+                setLoading(false)
+            }).catch((error) => {
+                setLoading(false)
+                message.error(error.response.data.message)
+            })
+        } else if (reportType === "RESERVATION") {
+            values.page = 1
+            values.size = 1000
+            values.sortField = ""
+            values.sortOrder = "ASC"
+            reservationService.fetchReservations(values, values.status).then((res) => {
+                setReservationReportData({isShowReservationReport: true, reservationReportData: res.data.data})
+                setLoading(false)
+            }).catch((error) => {
+                setLoading(false)
+                message.error(error.response.data.message)
+
+            })
+        }
+    }
+    const customerReportColumns = [
+        {
+            title: 'Customer Name',
+            dataIndex: 'customerName',
+        },
+        {
+            title: 'Contact No',
+            dataIndex: 'contactNumber',
+        },
+        {
+            title: 'Country',
+            dataIndex: 'country',
+        },
+        {
+            title: 'User Name',
+            dataIndex: 'username',
+        },
+        {
+            title: 'Registered Date',
+            dataIndex: 'registeredDate',
+            render: (text) => (
+                <>
+                    {text != null ? moment(text).format(DATE_FORMAT_YYYY_MM_DD_HH_MM) : "N/A"}
+                </>
+            )
+        },
+        {
+            title: 'Nic/Passport',
+            dataIndex: 'nicPass',
+        },
+    ]
+    const reservationReportColumns = [
+        {
+            title: 'Reservation ID',
+            dataIndex: 'reservationId',
+        },
+        {
+            title: 'Check In Date Time',
+            dataIndex: 'promisedCheckedInTime',
+            render: (text) => (
+                <>
+                    {text != null ? moment(text).format(DATE_FORMAT_YYYY_MM_DD_HH_MM) : "N/A"}
+                </>
+            )
+        },
+        {
+            title: 'Check Out Date Time',
+            dataIndex: 'promisedCheckedOutTime',
+            render: (text) => (
+                <>
+                    {text != null ? moment(text).format(DATE_FORMAT_YYYY_MM_DD_HH_MM) : "N/A"}
+                </>
+            )
+        },
+        {
+            title: 'Actual Checked In Date Time',
+            dataIndex: 'actualCheckedInTime',
+            render: (text) => (
+                <>
+                    {text != null ? moment(text).format(DATE_FORMAT_YYYY_MM_DD_HH_MM) : "N/A"}
+                </>
+            )
+        },
+        {
+            title: 'Actual Checked Out Date Time',
+            dataIndex: 'actualCheckedOutTime',
+            render: (text) => (
+                <>
+                    {text != null ? moment(text).format(DATE_FORMAT_YYYY_MM_DD_HH_MM) : "N/A"}
+                </>
+            )
+        },
+        {
+            title: 'Created Date Time',
+            dataIndex: 'createdDateTime',
+            render: (text) => (
+                <>
+                    {text != null ? moment(text).format(DATE_FORMAT_YYYY_MM_DD_HH_MM) : "N/A"}
+                </>
+            )
+        },
+        {
+            title: 'Total Amount',
+            dataIndex: 'totalAmount',
+        },
+        {
+            title: 'Reservation Status',
+            dataIndex: 'status',
+            render: (text, rec) => (
+                <Space size="middle">
+                    {
+                        text === "COMPLETED" ?
+                                "Completed": text === "CHECKED_IN" ?
+                                    "Checked In":
+                                text === "CHECKED_OUT" ?
+                                   "Checked Out":
+                                    text === "OPEN" ?
+                                            "Open" :
+                                        text === "PENDING" ?
+                                            "PENDING":
+                                                    "Canceled"
+
+
+                    }
+
+
+                </Space>
+            )
+        }
+    ]
     return (
         <>
-
-
+            <LoadingComp loading={isLoading}/>
             <Card
                 style={{width: '100%', marginTop: 50, background: 'rgba(0,0,0,0.42)', fontcolor: 'white'}}>
-                <Form layout="vertical">
+                <Form layout="vertical" onFinish={generateReport}>
                     <Row gutter={16}>
                         <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                            <Form.Item>
+                            <Form.Item label={"Report Type"}>
                                 <Select
                                     defaultValue={"0"}
                                     style={{
@@ -28,51 +199,199 @@ function ReportsComp(props) {
                                 >
 
                                     <Option key={"0"}>Select Report Type</Option>
-                                    <Option key={"1"}>Hotel Occupancy Report</Option>
-                                    <Option key={"2"}>Financial Report</Option>
+                                    <Option key={"CUSTOMER"}>Customer Detail Report</Option>
+                                    <Option key={"RESERVATION"}>Reservation Report</Option>
 
                                 </Select>
 
                             </Form.Item>
                         </Col>
                         {
-                            reportType === "1" ?
+                            reportType === "CUSTOMER" ?
                                 <>
                                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                                        <Form.Item>
-                                            <DatePicker  showTime placeholder={"Booking date from"}
-                                                         style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
+                                        <Form.Item name={"regDateFrom"} label={"Registered date from"}>
+                                            <DatePicker showTime placeholder={"Registered date from"}
+                                                        style={{
+                                                            background: 'rgba(0,0,0,0)',
+                                                            color: 'white',
+                                                            width: '100%'
+                                                        }}
                                             />
 
                                         </Form.Item>
                                     </Col>
                                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                                        <Form.Item>
-                                            <DatePicker  showTime placeholder={"Booking date to"}
-                                                         style={{background: 'rgba(0,0,0,0)', color: 'white',width:'100%'}}
+                                        <Form.Item name={"regDateTo"} label={"Registered date to"}>
+                                            <DatePicker showTime placeholder={"Registered date to"}
+                                                        style={{
+                                                            background: 'rgba(0,0,0,0)',
+                                                            color: 'white',
+                                                            width: '100%'
+                                                        }}
                                             />
                                         </Form.Item>
                                     </Col>
-                                </> : reportType === "2" ?
+                                </> :
+
+                                reportType === "RESERVATION" ?
                                     <>
+
                                         <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                                            <Form.Item>
-                                                <Select
-                                                    defaultValue={"1"}
-                                                    style={{
-                                                        width: "100%",
-                                                    }}
+                                            <Form.Item name={"promisedCheckedInTimeFrom"}
+                                                       label={"Checked In Date Time From"}>
+                                                <DatePicker showTime
+                                                            style={{
+                                                                background: 'rgba(0,0,0,0)',
+                                                                color: 'white',
+                                                                width: '100%'
+                                                            }}
+                                                />
+
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                            <Form.Item name={"promisedCheckedInTimeTo"}
+                                                       label={"Checked In Date Time To"}>
+                                                <DatePicker showTime
+                                                            style={{
+                                                                background: 'rgba(0,0,0,0)',
+                                                                color: 'white',
+                                                                width: '100%'
+                                                            }}
+                                                />
+
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                            <Form.Item name={"promisedCheckedOutTimeFrom"}
+                                                       label={"Checked Out Date Time From"}>
+                                                <DatePicker showTime
+                                                            style={{
+                                                                background: 'rgba(0,0,0,0)',
+                                                                color: 'white',
+                                                                width: '100%'
+                                                            }}
+                                                />
+
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                            <Form.Item name={"promisedCheckedOutTimeTo"}
+                                                       label={"Checked Out Date Time To"}>
+                                                <DatePicker showTime
+                                                            style={{
+                                                                background: 'rgba(0,0,0,0)',
+                                                                color: 'white',
+                                                                width: '100%'
+                                                            }}
+                                                />
+
+                                            </Form.Item>
+                                        </Col>
+
+                                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                            <Form.Item name={"actualCheckedInTimeFrom"}
+                                                       label={"Actual Checked In Date Time From"}>
+                                                <DatePicker showTime
+                                                            style={{
+                                                                background: 'rgba(0,0,0,0)',
+                                                                color: 'white',
+                                                                width: '100%'
+                                                            }}
+                                                />
+
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                            <Form.Item name={"actualCheckedInTimeTO"}
+                                                       label={"Actual Checked In Date Time To"}>
+                                                <DatePicker showTime
+                                                            style={{
+                                                                background: 'rgba(0,0,0,0)',
+                                                                color: 'white',
+                                                                width: '100%'
+                                                            }}
+                                                />
+
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                            <Form.Item name={"actualCheckedOutTimeFrom"}
+                                                       label={"Actual Checked Out Date Time From"}>
+                                                <DatePicker showTime
+                                                            style={{
+                                                                background: 'rgba(0,0,0,0)',
+                                                                color: 'white',
+                                                                width: '100%'
+                                                            }}
+                                                />
+
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                            <Form.Item name={"actualCheckedOutTimeTO"}
+                                                       label={"Actual Checked Out Date Time To"}>
+                                                <DatePicker showTime
+                                                            style={{
+                                                                background: 'rgba(0,0,0,0)',
+                                                                color: 'white',
+                                                                width: '100%'
+                                                            }}
+                                                />
+
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                            <Form.Item name={"nicPass"} label={"NIC/Passport"}>
+                                                <Input
+                                                    style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                                    type="text"/>
+
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                            <Form.Item name={"customerName"} label={"Customer Name"}>
+                                                <Input
+                                                    style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                                    type="text"/>
+
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                            <Form.Item name={"customerCountry"} label={"Country"}>
+                                                <Input
+                                                    style={{background: 'rgba(0,0,0,0)', color: 'white'}}
+                                                    type="text"/>
+
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
+                                            <Form.Item name={"status"} label={"Reservation Status"}>
+                                                <Select disabled={props.isFromMakePayment}
+                                                        defaultValue={props.isFromMakePayment ? "CHECKED_OUT" : ""}
+                                                        style={{
+                                                            width: "100%",
+                                                        }}
                                                 >
 
-                                                    <Option key={"1"}>Daily</Option>
-                                                    <Option key={"2"}>Monthly</Option>
-                                                    <Option key={"3"}>Yearly</Option>
+                                                    <Option key={""}>All</Option>
+                                                    <Option key={"PENDING"}>Pending</Option>
+                                                    <Option key={"OPEN"}>Open</Option>
+                                                    <Option key={"CHECKED_IN"}>Checked In</Option>
+                                                    <Option key={"CHECKED_OUT"}>Checked Out</Option>
+                                                    <Option key={"COMPLETED"}>Completed</Option>
+                                                    <Option key={"CANCELED"}>Canceled</Option>
 
                                                 </Select>
 
                                             </Form.Item>
                                         </Col>
-                                    </> : <></>
+
+                                    </>
+                                    :
+
+                                    <></>
                         }
 
 
@@ -86,7 +405,7 @@ function ReportsComp(props) {
                                         backgroundColor: 'transparent',
                                         borderColor: 'rgba(255,255,255,0.37)',
                                         width: '100%'
-                                    }}><ReloadOutlined/>Reset</Button>
+                                    }} htmlType={"reset"} onClick={() => generateReport({})}><ReloadOutlined/>Reset</Button>
                                 </Form.Item>
                                 <Form.Item>
                                     <Button type="primary" htmlType={"submit"}><SearchOutlined/>Generate</Button>
@@ -95,7 +414,24 @@ function ReportsComp(props) {
                         </Col>
                     </Row>
                 </Form>
+                {
+                    isShowCustomerReport ?
+                        <Row gutter={16}>
+                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                <ReportDataComp reportName={"Customer_Report"}
+                                                reportColumns={customerReportColumns}
+                                                reportData={customerReportData}/>
+                            </Col>
+                        </Row> : isShowReservationReport ?
+                            <Row gutter={16}>
+                                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                    <ReportDataComp reportName={"Reservation_Report"}
+                                                    reportColumns={reservationReportColumns}
+                                                    reportData={reservationReportData}/>
+                                </Col>
+                            </Row> : ''
 
+                }
 
             </Card>
 
