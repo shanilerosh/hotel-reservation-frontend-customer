@@ -111,16 +111,17 @@ function CheckRoomsAvailabilityFilteration(props) {
 
                         </Form.Item>
                     </Col>
-                </Row>
-                <Row gutter={16}>
                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                        <Space size={16} style={{float: 'right', marginTop: 10}}>
+                        <Space size={16} style={{float: 'right'}}>
                             <Form.Item>
                                 <Button type="primary" htmlType={"submit"}><SearchOutlined/>Check
                                     Availability</Button>
                             </Form.Item>
                         </Space>
                     </Col>
+                </Row>
+                <Row gutter={16}>
+
                 </Row>
 
             </Form>

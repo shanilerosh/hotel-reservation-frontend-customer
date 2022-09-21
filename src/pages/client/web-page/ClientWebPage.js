@@ -21,6 +21,7 @@ import axios from "axios";
 import CheckRoomsAvailabilityFilteration from "../reservation/Check-Room-Availability-Filterations";
 import reservationService from "../../../Service/ReservationService";
 import FilteredAvailableRoomsComp from "../reservation/Filtered-Available-Rooms-Comp";
+import {Link} from "react-router-dom";
 
 const {Option} = Select;
 
@@ -146,7 +147,10 @@ function ClientWebPage() {
                             About Us
                         </Menu.Item>
                         <Menu.Item key="3">
-                            Sign In
+                            <Link style={{color:'white'}} to={"/sign-in"}>
+                                Sign In
+                            </Link>
+
                         </Menu.Item>
                     </Menu>
 
@@ -164,7 +168,7 @@ function ClientWebPage() {
             <div style={{
                 backgroundColor: "#000000e6",
                 width: "68%",
-                height: "32%",
+                height: "40%",
                 position: "absolute",
                 zIndex: 1,
                 marginLeft: "16%",
