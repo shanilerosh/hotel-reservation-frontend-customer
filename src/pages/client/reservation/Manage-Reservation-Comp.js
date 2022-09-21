@@ -23,7 +23,8 @@ import LoadingComp from "../../../components/loadingComp/LoadingComp";
 import Text from "antd/es/typography/Text";
 import moment from "moment";
 import ReservationDataComp from "./Reservation-Deta-Comp";
-import {DATE_FORMAT_YYYY_MM_DD_HH_MM} from "../../../util/Constants";
+import {DATE_FORMAT_YYYY_MM_DD_HH_MM, ROLE_CLARK, ROLE_CUSTOMER} from "../../../util/Constants";
+import {UtilitiService} from "../../../util/UtilitiService";
 
 const {Option} = Select;
 
@@ -164,6 +165,8 @@ function ManageReservationComp(props) {
         values.sortField = ""
         values.sortOrder = "ASC"
         values.status=props.isFromMakePayment?"CHECKED_OUT":values.status
+        values.nicPass=UtilitiService.getRole()===ROLE_CUSTOMER?
+            sessionStorage.getItem("nic"):values.nicPass
         reservationService.fetchReservations(values, values.status).then((res) => {
             setReservationData(res.data.data)
             setLoading(false)
@@ -313,7 +316,8 @@ function ManageReservationComp(props) {
                         </Col>
                         <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                             <Form.Item name={"nicPass"} label={"NIC/Passport"}>
-                                <Input
+                                <Input defaultValue={UtilitiService.getRole()===ROLE_CUSTOMER?
+                                    sessionStorage.getItem("nic"):""}
                                     style={{background: 'rgba(0,0,0,0)', color: 'white'}}
                                     type="text"/>
 

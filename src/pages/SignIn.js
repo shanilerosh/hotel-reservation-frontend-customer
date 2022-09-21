@@ -3,7 +3,7 @@ import {Button, Col, Divider, Drawer, Form, Input, Layout, message, Row, Typogra
 import Hotel from "../assets/images/hotel-img.jpeg";
 import "../assets/styles/main.css";
 import axios from "axios";
-import {BASE_URL} from "../util/Constants";
+import {BASE_URL, ROLE_CUSTOMER} from "../util/Constants";
 
 const {Title} = Typography;
 const {Header, Footer, Content} = Layout;
@@ -31,13 +31,20 @@ function SignIn(props) {
         params.append('password', val.password);
         axios.post(BASE_URL + `/login`, params)
             .then(res => {
-                console.log(res.data);
                 sessionStorage.setItem("token", res.data.access_token)
+                sessionStorage.setItem("nic", res.data.nic)
                 const decodedJwt = parseJwt(res.data.access_token);
                 sessionStorage.setItem("roles", decodedJwt.roles)
+                console.log(decodedJwt);
                 sessionStorage.setItem("exp", decodedJwt.exp)
                 sessionStorage.setItem("userName", val.userName)
-                window.location.href = '/dashboard'
+                if(decodedJwt.roles==ROLE_CUSTOMER){
+                    window.location.href = '/myReservations'
+                }else{
+                    window.location.href = '/dashboard'
+
+                }
+
             }).catch(error => {
             message.error(error.response.data.message);
         })

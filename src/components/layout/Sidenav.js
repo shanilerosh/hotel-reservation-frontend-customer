@@ -2,6 +2,8 @@ import {Menu} from "antd";
 import {NavLink, useLocation} from "react-router-dom";
 import React from "react";
 import Logo from "../../assets/images/hotelLogo5.png";
+import {UtilitiService} from "../../util/UtilitiService";
+import {ROLE_ADMIN, ROLE_CLARK, ROLE_CUSTOMER} from "../../util/Constants";
 
 function Sidenav({color}) {
     const {pathname} = useLocation();
@@ -17,41 +19,64 @@ function Sidenav({color}) {
             </div>
             <hr/>
             <Menu theme="light" mode="inline">
-                <Menu.Item key="1">
-                    <NavLink to="/dashboard">
-                        <span className="label">Dashboard</span>
-                    </NavLink>
-                </Menu.Item>
 
-                <Menu.Item key="2">
-                    <NavLink to="/createReservation">
+                {
+                    UtilitiService.getRole() === ROLE_ADMIN ?
+                        <>
+                            <Menu.Item key="1">
+                                <NavLink to="/dashboard">
+                                    <span className="label">Dashboard</span>
+                                </NavLink>
+                            </Menu.Item>
+                            <Menu.Item key="4">
+                                <NavLink to="/viewReports">
 
-                        <span className="label">Create Reservation</span>
-                    </NavLink>
-                </Menu.Item>
-                <Menu.Item key="3">
-                    <NavLink to="/manageReservation">
+                                    <span className="label">Reports</span>
+                                </NavLink>
+                            </Menu.Item>
+                        </> :
+                        UtilitiService.getRole() === ROLE_CLARK ?
+                            <>
+                                <Menu.Item key="1">
+                                    <NavLink to="/dashboard">
+                                        <span className="label">Dashboard</span>
+                                    </NavLink>
+                                </Menu.Item>
+                                <Menu.Item key="2">
+                                    <NavLink to="/createReservation">
 
-                        <span className="label">Manage Reservation</span>
-                    </NavLink>
-                </Menu.Item>
-                <Menu.Item key="4">
-                    <NavLink to="/viewReports">
+                                        <span className="label">Create Reservation</span>
+                                    </NavLink>
+                                </Menu.Item>
+                                <Menu.Item key="3">
+                                    <NavLink to="/manageReservation">
 
-                        <span className="label">Reports</span>
-                    </NavLink>
-                </Menu.Item>
-                {/*<Menu.Item key="5" >*/}
-                <Menu.SubMenu title="Payment">
-                    <NavLink to="/makePayment">
+                                        <span className="label">Manage Reservation</span>
+                                    </NavLink>
+                                </Menu.Item>
+                                <Menu.SubMenu title="Payment">
+                                    <NavLink to="/makePayment">
 
-                        <span className="label">Make Payment</span>
-                    </NavLink>
+                                        <span className="label">Make Payment</span>
+                                    </NavLink>
 
-                </Menu.SubMenu>
+                                </Menu.SubMenu>
+                            </> :
+                            UtilitiService.getRole() === ROLE_CUSTOMER ?
+                                <>
+                                    <Menu.Item key="2">
+                                        <NavLink to="/createReservation">
 
-                {/*</Menu.Item>*/}
-
+                                            <span className="label">Create Reservation</span>
+                                        </NavLink>
+                                    </Menu.Item>
+                                    <Menu.Item key="5">
+                                        <NavLink to="/myReservations">
+                                            <span className="label">My Reservation</span>
+                                        </NavLink>
+                                    </Menu.Item>
+                                </> : ""
+                }
             </Menu>
 
         </>
