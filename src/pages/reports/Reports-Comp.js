@@ -1,26 +1,10 @@
-import {
-    Select,
-    Button,
-    Card,
-    Col,
-    Divider,
-    Form,
-    Input,
-    Row,
-    Space,
-    Table,
-    Tag,
-    Tooltip,
-    DatePicker,
-    message
-} from "antd";
+import {Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Space} from "antd";
 import React, {useState} from 'react';
-import {EditOutlined, MessageOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
+import {ReloadOutlined, SearchOutlined} from "@ant-design/icons";
 import reportService from "../../Service/ReportService";
 import ReportDataComp from "./ReportDataComp";
 import LoadingComp from "../../components/loadingComp/LoadingComp";
-import {UtilitiService} from "../../util/UtilitiService";
-import {DATE_FORMAT_YYYY_MM_DD_HH_MM, ROLE_CUSTOMER} from "../../util/Constants";
+import {DATE_FORMAT_YYYY_MM_DD_HH_MM} from "../../util/Constants";
 import reservationService from "../../Service/ReservationService";
 import moment from "moment";
 
@@ -32,6 +16,8 @@ function ReportsComp(props) {
         {isShowCustomerReport: false, customerReportData: []})
     const [{isShowReservationReport, reservationReportData}, setReservationReportData] = useState(
         {isShowReservationReport: false, reservationReportData: []})
+    const [{isShowRevenueReport, revenueReportData}, setRevenueReportData] = useState(
+        {isShowRevenueReport: false, revenueReportData: []})
     const [isLoading, setLoading] = useState(false);
 
     const handleReportTypeChange = (val) => {
@@ -48,7 +34,7 @@ function ReportsComp(props) {
                 to: values.regDateTo,
                 reportType: reportType
             }
-            reportService.generateCustomerReport(reportFilter).then((res) => {
+            reportService.generateReport(reportFilter).then((res) => {
                 console.log('customerData--', res);
                 setCustomerReportData({isShowCustomerReport: true, customerReportData: res.data.data})
                 setLoading(false)
@@ -68,6 +54,20 @@ function ReportsComp(props) {
                 setLoading(false)
                 message.error(error.response.data.message)
 
+            })
+        } else {
+            const reportFilter = {
+                from: values.fromDate,
+                to: values.fromDate,
+                reportType: reportType
+            }
+            reportService.generateReport(reportFilter).then((res) => {
+                console.log('revenue--', res);
+                setRevenueReportData({isShowRevenueReport: true, revenueReportData: res.data.data})
+                setLoading(false)
+            }).catch((error) => {
+                setLoading(false)
+                message.error(error.response.data.message)
             })
         }
     }
@@ -163,15 +163,15 @@ function ReportsComp(props) {
                 <Space size="middle">
                     {
                         text === "COMPLETED" ?
-                                "Completed": text === "CHECKED_IN" ?
-                                    "Checked In":
+                            "Completed" : text === "CHECKED_IN" ?
+                                "Checked In" :
                                 text === "CHECKED_OUT" ?
-                                   "Checked Out":
+                                    "Checked Out" :
                                     text === "OPEN" ?
-                                            "Open" :
+                                        "Open" :
                                         text === "PENDING" ?
-                                            "PENDING":
-                                                    "Canceled"
+                                            "PENDING" :
+                                            "Canceled"
 
 
                     }
@@ -181,6 +181,43 @@ function ReportsComp(props) {
             )
         }
     ]
+    const revenueReportColumns = [
+        {
+            title: 'Reservation Id',
+            dataIndex: 'reservationId',
+        },
+        {
+            title: 'Laundry',
+            dataIndex: 'laundryCharges',
+        },
+        {
+            title: 'Bar',
+            dataIndex: 'barCharges',
+        },
+        {
+            title: 'Telephone',
+            dataIndex: 'telephoneCharges',
+        },
+        {
+            title: 'Club',
+            dataIndex: 'clubFacility',
+        },
+        {
+            title: 'KET',
+            dataIndex: 'ketCharges',
+        },
+        {
+            title: 'Payment Date Time',
+            dataIndex: 'paymentDateTime',
+            render: (text) => (
+                <>
+                    {text != null ? moment(text).format(DATE_FORMAT_YYYY_MM_DD_HH_MM) : "N/A"}
+                </>
+            )
+        }
+    ]
+
+
     return (
         <>
             <LoadingComp loading={isLoading}/>
@@ -201,6 +238,7 @@ function ReportsComp(props) {
                                     <Option key={"0"}>Select Report Type</Option>
                                     <Option key={"CUSTOMER"}>Customer Detail Report</Option>
                                     <Option key={"RESERVATION"}>Reservation Report</Option>
+                                    <Option key={"REVENUE"}>Revenue Report</Option>
 
                                 </Select>
 
@@ -390,8 +428,33 @@ function ReportsComp(props) {
 
                                     </>
                                     :
+                                    reportType === "REVENUE" ?
+                                        <>
+                                            <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                                <Form.Item name={"fromDate"} label={"Date from"}>
+                                                    <DatePicker showTime placeholder={"Date from"}
+                                                                style={{
+                                                                    background: 'rgba(0,0,0,0)',
+                                                                    color: 'white',
+                                                                    width: '100%'
+                                                                }}
+                                                    />
 
-                                    <></>
+                                                </Form.Item>
+                                            </Col>
+                                            <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                                <Form.Item name={"toDate"} label={"Date to"}>
+                                                    <DatePicker showTime placeholder={"Date to"}
+                                                                style={{
+                                                                    background: 'rgba(0,0,0,0)',
+                                                                    color: 'white',
+                                                                    width: '100%'
+                                                                }}
+                                                    />
+                                                </Form.Item>
+                                            </Col>
+                                        </> :
+                                        <></>
                         }
 
 
@@ -405,7 +468,8 @@ function ReportsComp(props) {
                                         backgroundColor: 'transparent',
                                         borderColor: 'rgba(255,255,255,0.37)',
                                         width: '100%'
-                                    }} htmlType={"reset"} onClick={() => generateReport({})}><ReloadOutlined/>Reset</Button>
+                                    }} htmlType={"reset"}
+                                            onClick={() => generateReport({})}><ReloadOutlined/>Reset</Button>
                                 </Form.Item>
                                 <Form.Item>
                                     <Button type="primary" htmlType={"submit"}><SearchOutlined/>Generate</Button>
@@ -429,8 +493,15 @@ function ReportsComp(props) {
                                                     reportColumns={reservationReportColumns}
                                                     reportData={reservationReportData}/>
                                 </Col>
-                            </Row> : ''
+                            </Row> : isShowRevenueReport ?
 
+                                <Row gutter={16}>
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <ReportDataComp reportName={"Revenue_Report"}
+                                                        reportColumns={revenueReportColumns}
+                                                        reportData={revenueReportData}/>
+                                    </Col>
+                                </Row> : ''
                 }
 
             </Card>

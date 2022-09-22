@@ -5,7 +5,7 @@ class ReportService {
     fetchCostDetails = (reservationId) => {
         return HttpService.get("/payment/"+reservationId);
     }
-    generateCustomerReport = (reportDto) => {
+    generateReport = (reportDto) => {
         return HttpService.post("/report/",reportDto);
     }
 
