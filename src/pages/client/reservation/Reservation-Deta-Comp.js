@@ -25,7 +25,7 @@ import {
 import reservationService from "../../../Service/ReservationService";
 import moment from "moment";
 import LoadingComp from "../../../components/loadingComp/LoadingComp";
-import {DATE_FORMAT_YYYY_MM_DD, DATE_FORMAT_YYYY_MM_DD_HH_MM} from "../../../util/Constants";
+import {DATE_FORMAT_YYYY_MM_DD, DATE_FORMAT_YYYY_MM_DD_HH_MM, ROLE_CUSTOMER} from "../../../util/Constants";
 import paymentService from "../../../Service/PaymentService";
 import CustomerDataSection from "./CustomerDataSection";
 import ReservationDateDataSection from "./ReservationDateDataSection";
@@ -33,6 +33,7 @@ import AdditionalChargesSection from "./AdditionalChargesSection";
 import CardDataSection from "./CardDataSection";
 import {useHistory} from "react-router-dom";
 import paidlogo from "../../../assets/images/paid-log.png";
+import {UtilitiService} from "../../../util/UtilitiService";
 
 
 function ReservationDataComp(props) {
@@ -199,7 +200,7 @@ function ReservationDataComp(props) {
                     } else {
                         makePaymentByCash()
                     }
-                }else if(reservationStatus === "COMPLETED"){
+                } else if (reservationStatus === "COMPLETED") {
                     downloadInvoice();
                 }
             }
@@ -250,11 +251,11 @@ function ReservationDataComp(props) {
             total: totalPayable,
             intent: "sale",
             description: resForm.getFieldValue("customerName") + " payment as at " + moment(new Date()).format(DATE_FORMAT_YYYY_MM_DD_HH_MM),
-            laundryCharges:resForm.getFieldValue("laundryCharges"),
-            barCharges:resForm.getFieldValue("barCharges"),
-            telephoneCharges:resForm.getFieldValue("telephoneCharges"),
-            clubFacility:resForm.getFieldValue("clubFacility"),
-            ketCharges:resForm.getFieldValue("ketCharges"),
+            laundryCharges: resForm.getFieldValue("laundryCharges"),
+            barCharges: resForm.getFieldValue("barCharges"),
+            telephoneCharges: resForm.getFieldValue("telephoneCharges"),
+            clubFacility: resForm.getFieldValue("clubFacility"),
+            ketCharges: resForm.getFieldValue("ketCharges"),
         }
         paymentService.makeCardPayment(paypalDto).then((res) => {
 
@@ -269,11 +270,11 @@ function ReservationDataComp(props) {
         const paymentDto = {
             reservationId: resForm.getFieldValue("reservationId"),
             paymentAmount: totalPayable,
-            laundryCharges:resForm.getFieldValue("laundryCharges"),
-            barCharges:resForm.getFieldValue("barCharges"),
-            telephoneCharges:resForm.getFieldValue("telephoneCharges"),
-            clubFacility:resForm.getFieldValue("clubFacility"),
-            ketCharges:resForm.getFieldValue("ketCharges")
+            laundryCharges: resForm.getFieldValue("laundryCharges"),
+            barCharges: resForm.getFieldValue("barCharges"),
+            telephoneCharges: resForm.getFieldValue("telephoneCharges"),
+            clubFacility: resForm.getFieldValue("clubFacility"),
+            ketCharges: resForm.getFieldValue("ketCharges")
         }
         paymentService.makeCashPayment(paymentDto).then((res) => {
             message.success("Cash Payment Done Successfully")
@@ -283,9 +284,9 @@ function ReservationDataComp(props) {
             message.error(error.response.data.message)
         })
     }
-    const downloadInvoice=()=>{
+    const downloadInvoice = () => {
         paymentService.downlaodInvoice(resForm.getFieldValue("reservationId")).then(res => {
-                setTemplateUrl("data:application/pdf;base64,".concat(res.data))
+            setTemplateUrl("data:application/pdf;base64,".concat(res.data))
 
             setTimeout(function () {
                 btnDownloadCredit.current.click()
@@ -555,39 +556,56 @@ function ReservationDataComp(props) {
                                 </Row> </Card> : ''
 
                     }
+                    <Row>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <Space size={16} style={{float: 'right'}}>
 
-                    <Space size={16} style={{float: 'right'}}>
-
-                        {reservationStatus === "OPEN" || reservationStatus === "PENDING" ?
-                            <Form.Item>
-                                <Button style={{
-                                    color: '#ffffff',
-                                    backgroundColor: 'transparent',
-                                    borderColor: '#ffffff',
-                                    width: '100%'
-                                }} onClick={() => cancelReservation()}><CloseCircleOutlined/>Cancel Reservation</Button>
-                            </Form.Item> : ''
-                        }
-                        <a ref={btnDownloadCredit} href={templateUrl}
-                           download={"Payment-Invoice-"+resForm.getFieldValue("reservationId")+"-"+moment(new Date()).format(DATE_FORMAT_YYYY_MM_DD_HH_MM)}></a>
-                        <Form.Item>
-                            <Button type="primary" htmlType={"submit"}>
-                                {reservationStatus === "OPEN" ?
-                                    <><CheckCircleOutlined/>Mark As Checked In </> :
-                                    reservationStatus === "CHECKED_IN" ?
-                                        <><MacCommandOutlined/>Mark As Checked Out</> :
-                                        reservationStatus === "CHECKED_OUT" && !props.isFromMakePayment ?
-                                            <><MoneyCollectOutlined/>Proceed to Payment</> :
-                                            reservationStatus === "CHECKED_OUT" && props.isFromMakePayment ?
-                                                <><MoneyCollectOutlined/>Make The Payment</> :
-                                                reservationStatus === "COMPLETED" ?
-                                                    <><DownloadOutlined/>Download Receipt</> :
-                                                    reservationStatus === "PENDING" ?
-                                                        <><ExclamationCircleOutlined/>Update Card Details</> : ""
+                                {reservationStatus === "OPEN" || reservationStatus === "PENDING" ?
+                                    <Form.Item>
+                                        <Button style={{
+                                            color: '#ffffff',
+                                            backgroundColor: 'transparent',
+                                            borderColor: '#ffffff',
+                                            width: '100%'
+                                        }} onClick={() => cancelReservation()}><CloseCircleOutlined/>Cancel Reservation</Button>
+                                    </Form.Item> : ''
                                 }
-                            </Button>
-                        </Form.Item>
-                    </Space>
+                                <a ref={btnDownloadCredit} href={templateUrl}
+                                   download={"Payment-Invoice-" + resForm.getFieldValue("reservationId") + "-" + moment(new Date()).format(DATE_FORMAT_YYYY_MM_DD_HH_MM)}></a>
+                                <Form.Item>
+                                    {
+                                        UtilitiService.getRole() === ROLE_CUSTOMER ?
+                                            <Button type="primary" htmlType={"submit"}>
+                                                {
+                                                    reservationStatus === "COMPLETED" ?
+                                                        <><DownloadOutlined/>Download Receipt</> :
+                                                        reservationStatus === "PENDING" ?
+                                                            <><ExclamationCircleOutlined/>Update Card Details</> : ""
+                                                }
+                                            </Button> :
+                                            <Button type="primary" htmlType={"submit"}>
+                                                {reservationStatus === "OPEN" ?
+                                                    <><CheckCircleOutlined/>Mark As Checked In </> :
+                                                    reservationStatus === "CHECKED_IN" ?
+                                                        <><MacCommandOutlined/>Mark As Checked Out</> :
+                                                        reservationStatus === "CHECKED_OUT" && !props.isFromMakePayment ?
+                                                            <><MoneyCollectOutlined/>Proceed to Payment</> :
+                                                            reservationStatus === "CHECKED_OUT" && props.isFromMakePayment ?
+                                                                <><MoneyCollectOutlined/>Make The Payment</> :
+                                                                reservationStatus === "COMPLETED" ?
+                                                                    <><DownloadOutlined/>Download Receipt</> :
+                                                                    reservationStatus === "PENDING" ?
+                                                                        <><ExclamationCircleOutlined/>Update Card
+                                                                            Details</> : ""
+                                                }
+                                            </Button>
+                                    }
+
+                                </Form.Item>
+                            </Space>
+                        </Col>
+                    </Row>
+
                 </Form>
             </Card>
 

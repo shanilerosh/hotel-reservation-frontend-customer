@@ -5,10 +5,15 @@ import {DownloadOutlined} from "@ant-design/icons";
 
 function ReportDataComp(props) {
     const handleDownloadClick = () => {
+        let columns=props.reportColumns;
+        if(props.reportName==="Revenue_Report"){
+            columns.pop()
+        }
+        console.log(columns);
         const excel = new Excel();
         excel
             .addSheet("ReportData")
-            .addColumns(props.reportColumns)
+            .addColumns(columns)
             .addDataSource(props.reportData, {
                 str2Percent: true
             })

@@ -101,7 +101,7 @@ function EnterBookingDetailComp(props) {
     const makeReservationAsCustomer = (reservationData) => {
         reservationService.makeReservationCustomer(reservationData).then((res) => {
             message.success("Reservation created successfully")
-            Location.reload()
+            window.location.reload();
 
             setLoading(false)
         }).catch((error) => {
