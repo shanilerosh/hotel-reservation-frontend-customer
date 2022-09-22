@@ -1,12 +1,15 @@
-import {Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Space} from "antd";
+import {Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Space, Tooltip} from "antd";
 import React, {useState} from 'react';
-import {ReloadOutlined, SearchOutlined} from "@ant-design/icons";
+import {EditOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
 import reportService from "../../Service/ReportService";
 import ReportDataComp from "./ReportDataComp";
 import LoadingComp from "../../components/loadingComp/LoadingComp";
 import {DATE_FORMAT_YYYY_MM_DD_HH_MM} from "../../util/Constants";
 import reservationService from "../../Service/ReservationService";
 import moment from "moment";
+import {Chart} from "react-google-charts";
+import ReservationDataComp from "../client/reservation/Reservation-Deta-Comp";
+import Modal from "antd/es/modal/Modal";
 
 const {Option} = Select;
 
@@ -19,7 +22,8 @@ function ReportsComp(props) {
     const [{isShowRevenueReport, revenueReportData}, setRevenueReportData] = useState(
         {isShowRevenueReport: false, revenueReportData: []})
     const [isLoading, setLoading] = useState(false);
-
+    const [{isChartModalVisible, chartModalData},setChartModalVisible] =
+        useState({isChartModalVisible: false, chartModalData: {}})
     const handleReportTypeChange = (val) => {
         setReservationReportData({isShowReservationReport: false, reservationReportData: []})
         setCustomerReportData({isShowCustomerReport: false, customerReportData: []})
@@ -214,13 +218,69 @@ function ReportsComp(props) {
                     {text != null ? moment(text).format(DATE_FORMAT_YYYY_MM_DD_HH_MM) : "N/A"}
                 </>
             )
+        },
+        {
+            title: 'View Chart',
+            key: 'action',
+            align: 'center',
+            fixed: 'right',
+            render: (text, rec) => (
+                <Space size="middle">
+                    <Tooltip title="View Chart" style={{backgroundColor: '#000000fa'}}>
+                        <Button className={"table-icon-color"} onClick={() => setChartModalData(rec)}
+                                style={{color: '#faad14', backgroundColor: '#070814f5'}}
+
+
+                        ><EditOutlined/></Button>
+                    </Tooltip>
+                </Space>
+            )
         }
     ]
+    const setChartModalData = (rec) => {
+        setChartModalVisible({isChartModalVisible: true,chartModalData: rec})
+    }
+    const data = [
+        ["", "KET", "Club", "Telephone", "Bar", "Laundry"],
+        ["Revenue From Reservation Id - "+chartModalData.reservationId, chartModalData.ketCharges, chartModalData.clubFacility,
+            chartModalData.telephoneCharges, chartModalData.barCharges, chartModalData.laundryCharges],
 
+    ];
+    const options = {
+        chart: {
+            title: "Revenue Per Reservation",
+        },
 
+    };
     return (
         <>
             <LoadingComp loading={isLoading}/>
+            <Modal className="modal-custom-bg"
+                   title="Revenue Details"
+                   style={{
+                       width: '100%', marginTop: 50, backgroundColor: '#08325e',
+                       fontcolor: 'white',
+                   }}
+                   centered
+                   maskClosable={false}
+                   visible={isChartModalVisible}
+                   onCancel={() =>
+                       setChartModalVisible(
+                           {isChartModalVisible: false, chartModalData: {}})}
+                   destroyOnClose={true}
+                   footer={null}
+                   width={1000}>
+
+                <Chart
+                    chartType="Bar"
+                    width="100%"
+                    height="400px"
+                    data={data}
+                    options={options}
+                />
+
+            </Modal>
+
             <Card
                 style={{width: '100%', marginTop: 50, background: 'rgba(0,0,0,0.42)', fontcolor: 'white'}}>
                 <Form layout="vertical" onFinish={generateReport}>
