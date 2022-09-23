@@ -38,15 +38,21 @@ function SignIn(props) {
                 console.log(decodedJwt);
                 sessionStorage.setItem("exp", decodedJwt.exp)
                 sessionStorage.setItem("userName", val.userName)
-                if(decodedJwt.roles==ROLE_CUSTOMER){
+                if (decodedJwt.roles == ROLE_CUSTOMER) {
                     window.location.href = '/myReservations'
-                }else{
+                } else {
                     window.location.href = '/dashboard'
 
                 }
 
             }).catch(error => {
-            message.error(error.response.data.message);
+            console.log(error);
+            if (error.response.status === 403) {
+                message.error("Bad credentials. Please check and try again");
+            } else {
+                message.error("System error occurred");
+            }
+
         })
 
     };
@@ -61,10 +67,10 @@ function SignIn(props) {
 
     };
     const registrationSubmit = (customerRegVals) => {
-        axios.post(BASE_URL+`/api/customer/`, customerRegVals).then((res) => {
-            message.success("New Customer Added Successfully")
+        axios.post(BASE_URL + `/api/customer/`, customerRegVals).then((res) => {
+            message.success("Client Detail Added Successfully")
+            window.location.reload()
         }).catch((error) => {
-
             message.error(error.response.data.message);
         })
     };
