@@ -1,5 +1,5 @@
-import {Button, Card, Carousel, Col, Divider, message, Row, Space, Table} from "antd";
-import React, {useEffect, useState} from 'react';
+import {Button, Card, Carousel, Col, Divider, Row, Space, Table} from "antd";
+import React, {useState} from 'react';
 import {CheckCircleOutlined, FundViewOutlined} from "@ant-design/icons";
 import Modal from "antd/es/modal/Modal";
 import reservationService from "../../../Service/ReservationService";

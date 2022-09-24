@@ -8,7 +8,6 @@ import {DATE_FORMAT_YYYY_MM_DD_HH_MM} from "../../util/Constants";
 import reservationService from "../../Service/ReservationService";
 import moment from "moment";
 import {Chart} from "react-google-charts";
-import ReservationDataComp from "../client/reservation/Reservation-Deta-Comp";
 import Modal from "antd/es/modal/Modal";
 
 const {Option} = Select;
