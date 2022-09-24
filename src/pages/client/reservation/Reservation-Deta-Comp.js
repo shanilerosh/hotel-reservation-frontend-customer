@@ -334,7 +334,6 @@ function ReservationDataComp(props) {
 
     }
     const confirmPayment = () => {
-        alert(resForm.getFieldValue("laundryCharges"))
         const totalPayable =
             totalRoomBasicCharge +
             parseInt(checkValueIsEmptyOrUndefined(resForm.getFieldValue("ketCharges"))) +

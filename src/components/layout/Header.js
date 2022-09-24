@@ -7,7 +7,8 @@ import {FacebookFilled, LogoutOutlined, StarOutlined, TwitterOutlined,} from "@a
 import {Link, NavLink} from "react-router-dom";
 import styled from "styled-components";
 import avtar from "../../assets/images/team-2.jpg";
-
+import {UtilitiService} from "../../util/UtilitiService";
+import {ROLE_CLARK, ROLE_CUSTOMER} from "../../util/Constants";
 
 
 const profile = [
@@ -39,11 +40,16 @@ function Header({name}) {
         sessionStorage.clear();
         window.location.href = '/sign-in'
     }
+    const getRole = () => {
+        const role = UtilitiService.getRole();
+        return role === ROLE_CUSTOMER ?
+            "Client" : role === ROLE_CLARK ? "Clerk" : "Manager"
+    }
     return (
         <>
 
             <Row gutter={[24, 0]}>
-                <Col span={24} md={6}>
+                <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                     <Breadcrumb>
                         <Breadcrumb.Item>
                             <NavLink to="/">Pages</NavLink>
@@ -54,10 +60,17 @@ function Header({name}) {
                     </Breadcrumb>
 
                 </Col>
-                <Col span={24} md={18} className="header-control">
+                <Col xs={8} sm={8} md={8} lg={8} xl={8} className="header-control">
 
-                    <p style={{marginBottom:2,marginLeft:7,color:'white'}}>Log Out
-                    </p><LogoutOutlined style={{color:'white'}} onClick={()=>onSignOut()} />
+                    <p style={{marginBottom: 2, marginLeft: 7, color: 'white',
+                        fontFamily:"Open Sans",fontStyle:"italic",fontWeight:500}}>
+                        Welcome {UtilitiService.getUserName() + " (" + getRole() + ")"}</p>
+
+                </Col>
+                <Col xs={8} sm={8} md={8} lg={8} xl={8} className="header-control">
+
+                    <p style={{marginBottom: 2, marginLeft: 7, color: 'white'}}>Log Out
+                    </p><LogoutOutlined style={{color: 'white'}} onClick={() => onSignOut()}/>
 
                 </Col>
             </Row>
